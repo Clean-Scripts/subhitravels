@@ -3,98 +3,526 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book a Ride | Subhi Tour & Travels</title>
+    <title>Book a Ride | Subhi Travels</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Leaflet CSS for maps -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="icon" type="image/x-icon" href="https://clean-scripts.github.io/subhitravels/favicon.ico">
+    <style>
+        .leaflet-container { 
+            width: 100%; 
+            height: 300px; 
+            border-radius: 0.5rem;
+            border: 1px solid #e5e7eb;
+            z-index: 1;
+        }
+        .map-container {
+            position: relative;
+            margin-top: 0.5rem;
+        }
+        .map-overlay {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            z-index: 1000;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .calculation-box {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-left: 4px solid #10b981;
+        }
+    </style>
 </head>
 <body class="bg-gray-50 font-sans">
 
     <nav class="bg-white shadow-sm fixed w-full z-50">
         <div class="max-w-7xl mx-auto px-4 h-20 flex justify-between items-center">
-            <a href="index.html" class="font-bold text-xl text-red-600">Subhi Tour & Travels</a>
-            <a href="index.html" class="text-gray-600 hover:text-red-600"><i class="fas fa-home"></i> Back to Home</a>
+            <a href="index.html" class="font-bold text-xl text-red-600 flex items-center gap-2">
+                <i class="fas fa-car text-red-500"></i>
+                Subhi Travels
+            </a>
+            <a href="index.html" class="text-gray-600 hover:text-red-600 transition-colors">
+                <i class="fas fa-home mr-1"></i> Back to Home
+            </a>
         </div>
     </nav>
 
     <div class="min-h-screen pt-28 pb-12 px-4 flex items-center justify-center">
-        <div class="bg-white w-full max-w-2xl rounded-2xl shadow-xl overflow-hidden">
-            <div class="bg-red-600 p-6 text-white text-center">
-                <h2 class="text-3xl font-bold">Book Your Ride</h2>
-                <p class="opacity-90 mt-2">Fill the details below to request a booking via WhatsApp</p>
+        <div class="bg-white w-full max-w-4xl rounded-2xl shadow-xl overflow-hidden">
+            <div class="bg-gradient-to-r from-red-600 to-red-500 p-6 text-white text-center">
+                <h2 class="text-3xl font-bold">Book Your Luxury Ride</h2>
+                <p class="opacity-90 mt-2">Premium A/C & Non A/C cars available across India</p>
             </div>
             
-            <form id="bookingForm" class="p-8 space-y-6">
-                <div class="grid md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Your Name</label>
-                        <input type="text" id="name" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition" placeholder="John Doe">
+            <form id="bookingForm" class="p-8 space-y-8">
+                <!-- Personal Details Section -->
+                <div class="space-y-4">
+                    <h3 class="text-xl font-semibold text-gray-800 border-b pb-2">Personal Details</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Your Name *</label>
+                            <input type="text" id="name" required 
+                                   class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition"
+                                   placeholder="John Doe">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Mobile Number *</label>
+                            <input type="tel" id="number" required 
+                                   class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition"
+                                   placeholder="+91 99999 99999">
+                        </div>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Mobile Number</label>
-                        <input type="tel" id="number" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition" placeholder="+91 99999 99999">
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">No. of Passengers *</label>
+                            <select id="people" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 outline-none">
+                                <option value="">Select passengers</option>
+                                <option value="1">1 Passenger</option>
+                                <option value="2">2 Passengers</option>
+                                <option value="3">3 Passengers</option>
+                                <option value="4">4 Passengers</option>
+                                <option value="5">5 Passengers</option>
+                                <option value="6">6+ Passengers</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Count of Bags *</label>
+                            <select id="bags" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 outline-none">
+                                <option value="">Select bags</option>
+                                <option value="0">No bags</option>
+                                <option value="1">1 Bag</option>
+                                <option value="2">2 Bags</option>
+                                <option value="3">3 Bags</option>
+                                <option value="4">4+ Bags</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
-                <div class="grid md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">No. of Pax</label>
-                        <input type="number" id="people" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 outline-none" placeholder="e.g. 4">
+                <!-- Location & Map Section -->
+                <div class="space-y-4">
+                    <h3 class="text-xl font-semibold text-gray-800 border-b pb-2">Journey Details</h3>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Pickup Location *</label>
+                            <input type="text" id="pickupLocation" required 
+                                   class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 outline-none mb-2"
+                                   placeholder="Enter pickup address">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Pickup Date & Time *</label>
+                            <input type="datetime-local" id="pickup" required 
+                                   class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Drop Location *</label>
+                            <input type="text" id="dropLocation" required 
+                                   class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 outline-none mb-2"
+                                   placeholder="Enter drop address">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Drop Date & Time (Approx) *</label>
+                            <input type="datetime-local" id="drop" required 
+                                   class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 outline-none">
+                        </div>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Count of Bags</label>
-                        <input type="number" id="bags" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 outline-none" placeholder="e.g. 2">
+
+                    <!-- Map Container -->
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Select Locations on Map</label>
+                        <div class="map-container">
+                            <div class="map-overlay">
+                                <i class="fas fa-map-marker-alt text-red-500 mr-2"></i>
+                                <span id="mapInstructions">Click on map to set pickup (green) and drop (red) points</span>
+                            </div>
+                            <div id="map"></div>
+                        </div>
+                        <div class="flex justify-between items-center mt-2 text-sm text-gray-600">
+                            <div>
+                                <i class="fas fa-map-marker-alt text-green-500 mr-1"></i>
+                                <span id="pickupCoords">Pickup: Not set</span>
+                            </div>
+                            <div>
+                                <i class="fas fa-map-marker-alt text-red-500 mr-1"></i>
+                                <span id="dropCoords">Drop: Not set</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Distance & Charges Calculation -->
+                    <div id="calculationSection" class="hidden mt-6">
+                        <div class="calculation-box p-4 rounded-lg">
+                            <h4 class="font-semibold text-gray-800 mb-3">Estimated Calculation</h4>
+                            <div class="grid md:grid-cols-3 gap-4">
+                                <div class="text-center p-3 bg-white rounded-lg shadow-sm">
+                                    <div class="text-2xl font-bold text-blue-600" id="distanceValue">0</div>
+                                    <div class="text-sm text-gray-600">Distance (km)</div>
+                                </div>
+                                <div class="text-center p-3 bg-white rounded-lg shadow-sm">
+                                    <div class="text-2xl font-bold text-green-600" id="durationValue">0</div>
+                                    <div class="text-sm text-gray-600">Duration (hrs)</div>
+                                </div>
+                                <div class="text-center p-3 bg-white rounded-lg shadow-sm">
+                                    <div class="text-2xl font-bold text-red-600">₹<span id="estimatedPrice">0</span></div>
+                                    <div class="text-sm text-gray-600">Estimated Fare</div>
+                                </div>
+                            </div>
+                            <div class="mt-3 text-xs text-gray-500">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                Note: Final price may vary based on exact route, traffic, and vehicle type
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="grid md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Pickup Date & Time</label>
-                        <input type="datetime-local" id="pickup" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 outline-none">
+                <!-- Vehicle Selection -->
+                <div class="space-y-4">
+                    <h3 class="text-xl font-semibold text-gray-800 border-b pb-2">Vehicle Selection</h3>
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="vehicle-option border rounded-lg p-4 cursor-pointer hover:border-red-400 transition" data-type="sedan">
+                            <div class="flex items-center">
+                                <i class="fas fa-car text-gray-400 text-2xl mr-3"></i>
+                                <div>
+                                    <div class="font-medium">Swift Dzire</div>
+                                    <div class="text-sm text-gray-600">Up to 3 passengers</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="vehicle-option border rounded-lg p-4 cursor-pointer hover:border-red-400 transition" data-type="suv">
+                            <div class="flex items-center">
+                                <i class="fas fa-car text-gray-400 text-2xl mr-3"></i>
+                                <div>
+                                    <div class="font-medium">Ertiga / SUV</div>
+                                    <div class="text-sm text-gray-600">Up to 6 passengers</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="vehicle-option border rounded-lg p-4 cursor-pointer hover:border-red-400 transition" data-type="premium">
+                            <div class="flex items-center">
+                                <i class="fas fa-car text-gray-400 text-2xl mr-3"></i>
+                                <div>
+                                    <div class="font-medium">Innova</div>
+                                    <div class="text-sm text-gray-600">Premium (6+ passengers)</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Drop Date & Time (Approx)</label>
-                        <input type="datetime-local" id="drop" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 outline-none">
-                    </div>
+                    <input type="hidden" id="vehicleType" value="sedan">
                 </div>
 
+                <!-- Special Requirements -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Special Requirements</label>
-                    <textarea id="special" rows="3" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 outline-none" placeholder="E.g., Need roof carrier, baby seat, etc."></textarea>
+                    <textarea id="special" rows="3" 
+                              class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 outline-none"
+                              placeholder="E.g., Need roof carrier, baby seat, multiple stops, etc."></textarea>
                 </div>
 
-                <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold text-lg py-4 rounded-lg shadow-lg hover:shadow-xl transition transform hover:-translate-y-1 flex items-center justify-center gap-2">
-                    <i class="fab fa-whatsapp text-2xl"></i> Send Request on WhatsApp
+                <!-- Submit Button -->
+                <button type="submit" 
+                        class="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold text-lg py-4 rounded-lg shadow-lg hover:shadow-xl transition transform hover:-translate-y-1 flex items-center justify-center gap-2">
+                    <i class="fab fa-whatsapp text-2xl"></i> Send Booking Request via WhatsApp
                 </button>
+
+                <!-- Note -->
+                <div class="text-center text-sm text-gray-600">
+                    <i class="fas fa-shield-alt mr-1"></i>
+                    Your information is secure. We'll contact you shortly for confirmation.
+                </div>
             </form>
         </div>
     </div>
 
+    <!-- Leaflet JS for maps -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- For distance calculation (using OSRM demo server) -->
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+
     <script>
+        // Initialize map and variables
+        let map, pickupMarker, dropMarker, routeControl;
+        let pickupLatLng = null;
+        let dropLatLng = null;
+        let selectedVehicle = 'sedan';
+        let distanceKm = 0;
+        let durationHours = 0;
+
+        // Initialize map when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Default center (India)
+            map = L.map('map').setView([22.7196, 75.8577], 5); // Center on India
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            // Vehicle selection
+            document.querySelectorAll('.vehicle-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.vehicle-option').forEach(opt => {
+                        opt.classList.remove('border-red-500', 'bg-red-50');
+                        opt.classList.add('border-gray-300');
+                    });
+                    this.classList.remove('border-gray-300');
+                    this.classList.add('border-red-500', 'bg-red-50');
+                    selectedVehicle = this.dataset.type;
+                    document.getElementById('vehicleType').value = selectedVehicle;
+                    calculateCharges();
+                });
+            });
+
+            // Set first vehicle as default selected
+            document.querySelector('.vehicle-option').click();
+
+            // Map click event
+            map.on('click', function(e) {
+                if (!pickupLatLng) {
+                    // Set pickup point
+                    pickupLatLng = e.latlng;
+                    if (pickupMarker) map.removeLayer(pickupMarker);
+                    pickupMarker = L.marker(pickupLatLng, {
+                        icon: L.icon({
+                            iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-green.png',
+                            iconSize: [25, 41],
+                            iconAnchor: [12, 41]
+                        })
+                    }).addTo(map).bindPopup('Pickup Point').openPopup();
+                    
+                    document.getElementById('pickupCoords').textContent = 
+                        `Pickup: ${pickupLatLng.lat.toFixed(4)}, ${pickupLatLng.lng.toFixed(4)}`;
+                    
+                    // Update instructions
+                    document.getElementById('mapInstructions').innerHTML = 
+                        '<i class="fas fa-map-marker-alt text-red-500 mr-2"></i>Now click for drop point (red marker)';
+                    
+                } else if (!dropLatLng) {
+                    // Set drop point
+                    dropLatLng = e.latlng;
+                    if (dropMarker) map.removeLayer(dropMarker);
+                    dropMarker = L.marker(dropLatLng, {
+                        icon: L.icon({
+                            iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-red.png',
+                            iconSize: [25, 41],
+                            iconAnchor: [12, 41]
+                        })
+                    }).addTo(map).bindPopup('Drop Point').openPopup();
+                    
+                    document.getElementById('dropCoords').textContent = 
+                        `Drop: ${dropLatLng.lat.toFixed(4)}, ${dropLatLng.lng.toFixed(4)}`;
+                    
+                    // Show calculation section
+                    document.getElementById('calculationSection').classList.remove('hidden');
+                    
+                    // Calculate route and charges
+                    calculateRoute();
+                } else {
+                    // Reset and start over
+                    map.eachLayer(layer => {
+                        if (layer instanceof L.Marker) {
+                            map.removeLayer(layer);
+                        }
+                    });
+                    if (routeControl) map.removeControl(routeControl);
+                    
+                    pickupLatLng = e.latlng;
+                    pickupMarker = L.marker(pickupLatLng, {
+                        icon: L.icon({
+                            iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-green.png',
+                            iconSize: [25, 41],
+                            iconAnchor: [12, 41]
+                        })
+                    }).addTo(map).bindPopup('Pickup Point');
+                    
+                    dropLatLng = null;
+                    document.getElementById('pickupCoords').textContent = 
+                        `Pickup: ${pickupLatLng.lat.toFixed(4)}, ${pickupLatLng.lng.toFixed(4)}`;
+                    document.getElementById('dropCoords').textContent = 'Drop: Not set';
+                    document.getElementById('mapInstructions').innerHTML = 
+                        '<i class="fas fa-map-marker-alt text-red-500 mr-2"></i>Now click for drop point (red marker)';
+                    
+                    document.getElementById('calculationSection').classList.add('hidden');
+                }
+            });
+
+            // Auto-suggest for pickup/drop locations
+            const pickupInput = document.getElementById('pickupLocation');
+            const dropInput = document.getElementById('dropLocation');
+            
+            // Simple geocoding simulation (in production, use a proper geocoding service)
+            pickupInput.addEventListener('blur', function() {
+                if (this.value && !pickupLatLng) {
+                    // Simulate getting coordinates for Indore (default)
+                    pickupLatLng = L.latLng(22.7196, 75.8577);
+                    if (pickupMarker) map.removeLayer(pickupMarker);
+                    pickupMarker = L.marker(pickupLatLng, {
+                        icon: L.icon({
+                            iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-green.png',
+                            iconSize: [25, 41],
+                            iconAnchor: [12, 41]
+                        })
+                    }).addTo(map).bindPopup('Pickup Point').openPopup();
+                    map.setView(pickupLatLng, 12);
+                    document.getElementById('pickupCoords').textContent = 
+                        `Pickup: ${pickupLatLng.lat.toFixed(4)}, ${pickupLatLng.lng.toFixed(4)}`;
+                }
+            });
+            
+            dropInput.addEventListener('blur', function() {
+                if (this.value && !dropLatLng && pickupLatLng) {
+                    // Simulate getting coordinates for a nearby location
+                    dropLatLng = L.latLng(pickupLatLng.lat + 0.1, pickupLatLng.lng + 0.1);
+                    if (dropMarker) map.removeLayer(dropMarker);
+                    dropMarker = L.marker(dropLatLng, {
+                        icon: L.icon({
+                            iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-red.png',
+                            iconSize: [25, 41],
+                            iconAnchor: [12, 41]
+                        })
+                    }).addTo(map).bindPopup('Drop Point').openPopup();
+                    document.getElementById('dropCoords').textContent = 
+                        `Drop: ${dropLatLng.lat.toFixed(4)}, ${dropLatLng.lng.toFixed(4)}`;
+                    document.getElementById('calculationSection').classList.remove('hidden');
+                    calculateRoute();
+                }
+            });
+        });
+
+        // Calculate route between points
+        function calculateRoute() {
+            if (!pickupLatLng || !dropLatLng) return;
+            
+            // Clear previous route if exists
+            if (routeControl) {
+                map.removeControl(routeControl);
+            }
+            
+            // Using OSRM demo server for routing
+            routeControl = L.Routing.control({
+                waypoints: [
+                    L.latLng(pickupLatLng.lat, pickupLatLng.lng),
+                    L.latLng(dropLatLng.lat, dropLatLng.lng)
+                ],
+                routeWhileDragging: false,
+                showAlternatives: false,
+                lineOptions: {
+                    styles: [{color: '#ef4444', weight: 4, opacity: 0.7}]
+                },
+                createMarker: function() { return null; }, // Don't create default markers
+                router: L.Routing.osrmv1({
+                    serviceUrl: 'https://router.project-osrm.org/route/v1'
+                })
+            }).addTo(map);
+            
+            // Listen for route found event
+            routeControl.on('routesfound', function(e) {
+                const routes = e.routes;
+                if (routes && routes.length > 0) {
+                    const route = routes[0];
+                    distanceKm = (route.summary.totalDistance / 1000).toFixed(1);
+                    durationHours = (route.summary.totalTime / 3600).toFixed(1);
+                    
+                    // Update display
+                    document.getElementById('distanceValue').textContent = distanceKm;
+                    document.getElementById('durationValue').textContent = durationHours;
+                    
+                    // Calculate charges
+                    calculateCharges();
+                }
+            });
+        }
+
+        // Calculate charges based on distance and vehicle type
+        function calculateCharges() {
+            if (!distanceKm) return;
+            
+            // Base rates per km for different vehicle types (in INR)
+            const rates = {
+                sedan: 15,     // Swift Dzire
+                suv: 20,       // Ertiga/SUV
+                premium: 25    // Innova
+            };
+            
+            // Minimum fare for each vehicle type
+            const minFare = {
+                sedan: 500,
+                suv: 700,
+                premium: 900
+            };
+            
+            const baseRate = rates[selectedVehicle] || rates.sedan;
+            const minCharge = minFare[selectedVehicle] || minFare.sedan;
+            
+            // Calculate fare: base rate × distance
+            let fare = baseRate * parseFloat(distanceKm);
+            
+            // Apply minimum fare
+            fare = Math.max(fare, minCharge);
+            
+            // Add time-based charges for long durations (> 8 hours)
+            if (parseFloat(durationHours) > 8) {
+                const extraHours = parseFloat(durationHours) - 8;
+                fare += extraHours * 100; // Extra 100 INR per hour after 8 hours
+            }
+            
+            // Round to nearest 10
+            fare = Math.ceil(fare / 10) * 10;
+            
+            // Update display
+            document.getElementById('estimatedPrice').textContent = fare.toLocaleString('en-IN');
+        }
+
+        // Form submission
         document.getElementById('bookingForm').addEventListener('submit', function(e) {
             e.preventDefault();
 
-            // 1. Get Values
+            // Get all form values
             const name = document.getElementById('name').value;
             const number = document.getElementById('number').value;
             const people = document.getElementById('people').value;
             const bags = document.getElementById('bags').value;
+            const pickupLocation = document.getElementById('pickupLocation').value;
+            const dropLocation = document.getElementById('dropLocation').value;
             const pickup = document.getElementById('pickup').value;
             const drop = document.getElementById('drop').value;
+            const vehicleType = document.getElementById('vehicleType').value;
             const special = document.getElementById('special').value;
-
-            // 2. Format Message
-            const message = `*New Booking Request*%0A%0A` +
-                            `*Name:* ${name}%0A` +
-                            `*Phone:* ${number}%0A` +
-                            `*Passengers:* ${people}%0A` +
-                            `*Bags:* ${bags}%0A` +
-                            `*Pickup:* ${pickup}%0A` +
-                            `*Drop:* ${drop}%0A` +
-                            `*Note:* ${special}`;
-
-            // 3. Open WhatsApp (Using Kartik's number from card: 918462891302)
-            const whatsappUrl = `https://wa.me/916264950669?text=${message}`;
             
+            // Format coordinates for message
+            const pickupCoords = pickupLatLng ? 
+                `${pickupLatLng.lat.toFixed(4)}, ${pickupLatLng.lng.toFixed(4)}` : 'Not specified';
+            const dropCoords = dropLatLng ? 
+                `${dropLatLng.lat.toFixed(4)}, ${dropLatLng.lng.toFixed(4)}` : 'Not specified';
+
+            // Format message with emojis and clear structure
+            const message = `🚗 *New Booking Request - Subhi Travels* 🚗%0A%0A` +
+                           `👤 *Customer Details*%0A` +
+                           `• *Name:* ${name}%0A` +
+                           `• *Phone:* ${number}%0A%0A` +
+                           
+                           `📍 *Journey Details*%0A` +
+                           `• *Pickup:* ${pickupLocation}%0A` +
+                           `• *Pickup Coords:* ${pickupCoords}%0A` +
+                           `• *Pickup Time:* ${pickup}%0A` +
+                           `• *Drop:* ${dropLocation}%0A` +
+                           `• *Drop Coords:* ${dropCoords}%0A` +
+                           `• *Drop Time:* ${drop}%0A%0A` +
+                           
+                           `📊 *Trip Information*%0A` +
+                           `• *Distance:* ${distanceKm} km%0A` +
+                           `• *Duration:* ${durationHours} hours%0A` +
+                           `• *Passengers:* ${people}%0A` +
+                           `• *Bags:* ${bags}%0A` +
+                           `• *Vehicle:* ${vehicleType.toUpperCase()}%0A` +
+                           `• *Estimated Fare:* ₹${document.getElementById('estimatedPrice').textContent}%0A%0A` +
+                           
+                           `📝 *Special Requirements*%0A${special || 'None'}`;
+
+            // Open WhatsApp with pre-filled message
+            const whatsappUrl = `https://wa.me/916264950669?text=${message}`;
             window.open(whatsappUrl, '_blank');
         });
     </script>
