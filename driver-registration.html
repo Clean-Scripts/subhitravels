@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Registration | Subhi Tour & Travels</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 font-sans">
+
+    <nav class="bg-white shadow-sm fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 h-20 flex justify-between items-center">
+            <a href="index.html" class="font-bold text-xl text-red-600">Subhi Tour & Travels</a>
+            <div class="flex gap-4">
+                <a href="index.html" class="text-gray-600 hover:text-red-600 font-medium"><i class="fas fa-home"></i> Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="min-h-screen pt-28 pb-12 px-4 flex items-center justify-center">
+        <div class="bg-white w-full max-w-2xl rounded-2xl shadow-xl overflow-hidden">
+            <div class="bg-gray-800 p-6 text-white text-center border-b-4 border-yellow-500">
+                <h2 class="text-3xl font-bold"><i class="fas fa-id-card text-yellow-500 mr-2"></i> Join as Driver</h2>
+                <p class="opacity-80 mt-2">Become a part of our professional driver network</p>
+            </div>
+            
+            <form id="driverForm" class="p-8 space-y-6">
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                        <input type="text" id="driverName" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-yellow-500 outline-none" placeholder="Enter your name">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Mobile Number</label>
+                        <input type="tel" id="driverPhone" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-yellow-500 outline-none" placeholder="+91">
+                    </div>
+                </div>
+
+                <div class="bg-yellow-50 p-4 rounded-lg">
+                    <h3 class="text-yellow-800 font-bold mb-3 uppercase text-sm tracking-wider">Experience & License</h3>
+                    <div class="grid md:grid-cols-2 gap-6 mb-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Total Experience (Years)</label>
+                            <input type="number" id="experience" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-yellow-500 outline-none" placeholder="e.g. 5">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">License Type</label>
+                            <select id="licenseType" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-yellow-500 outline-none bg-white">
+                                <option>Light Motor Vehicle (LMV)</option>
+                                <option>Heavy Motor Vehicle (HMV)</option>
+                                <option>Commercial</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Current Location / City</label>
+                        <input type="text" id="location" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-yellow-500 outline-none" placeholder="e.g. Indore, Vijay Nagar">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Which cars have you driven?</label>
+                    <textarea id="carsDriven" rows="2" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-yellow-500 outline-none" placeholder="e.g. Innova, Swift, Bus, etc."></textarea>
+                </div>
+
+                <div class="pt-4">
+                    <button type="submit" class="w-full bg-gray-900 hover:bg-black text-white font-bold text-lg py-4 rounded-lg shadow-lg hover:shadow-xl transition transform hover:-translate-y-1 flex items-center justify-center gap-2">
+                        <i class="fab fa-whatsapp text-2xl text-green-400"></i> Submit via WhatsApp
+                    </button>
+                    <p class="text-xs text-center text-gray-500 mt-3">Your details will be sent directly to our hiring team.</p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('driverForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // 1. Get Values
+            const driverName = document.getElementById('driverName').value;
+            const driverPhone = document.getElementById('driverPhone').value;
+            const experience = document.getElementById('experience').value;
+            const licenseType = document.getElementById('licenseType').value;
+            const location = document.getElementById('location').value;
+            const carsDriven = document.getElementById('carsDriven').value;
+
+            // 2. Format Message
+            const message = `*DRIVER REGISTRATION REQUEST*%0A%0A` +
+                            `*Name:* ${driverName}%0A` +
+                            `*Phone:* ${driverPhone}%0A` +
+                            `*Location:* ${location}%0A` +
+                            `------------------%0A` +
+                            `*Experience:* ${experience} Years%0A` +
+                            `*License:* ${licenseType}%0A` +
+                            `*Cars Driven:* ${carsDriven}%0A%0A` +
+                            `_I am interested in joining as a driver._`;
+
+            // 3. Open WhatsApp (Kartik's Number)
+            const whatsappUrl = `https://wa.me/918462891302?text=${message}`;
+            
+            window.open(whatsappUrl, '_blank');
+        });
+    </script>
+
+</body>
+</html>
