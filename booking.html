@@ -15,11 +15,15 @@
     <style>
         .leaflet-container { 
             width: 100%; 
-            height: 300px; 
-            border-radius: 0.75rem;
-            border: 2px solid #e5e7eb;
+            height: 250px; 
+            border-radius: 0.5rem;
+            border: 1px solid #e5e7eb;
             z-index: 1;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        @media (min-width: 768px) {
+            .leaflet-container {
+                height: 300px;
+            }
         }
         .map-container {
             position: relative;
@@ -37,588 +41,567 @@
         .map-btn {
             background: white;
             border: none;
-            padding: 8px 12px;
-            border-radius: 6px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            padding: 6px 10px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
             cursor: pointer;
-            font-size: 12px;
+            font-size: 11px;
             display: flex;
             align-items: center;
-            gap: 5px;
-            transition: all 0.3s ease;
-            font-weight: 500;
+            gap: 4px;
+        }
+        @media (min-width: 768px) {
+            .map-btn {
+                padding: 8px 12px;
+                font-size: 12px;
+            }
         }
         .map-btn:hover {
-            background: #fef2f2;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            background: #f8fafc;
         }
         .invoice-box {
             background: white;
-            border: 3px solid #fecaca;
-            border-radius: 1rem;
-            padding: 2rem;
-            margin-top: 1.5rem;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border: 2px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        @media (min-width: 768px) {
+            .invoice-box {
+                padding: 1.5rem;
+            }
         }
         .urgent-badge {
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            background: #fef3c7;
             color: #92400e;
-            padding: 0.5rem 1rem;
+            padding: 0.25rem 0.5rem;
             border-radius: 9999px;
-            font-size: 0.875rem;
+            font-size: 0.7rem;
             font-weight: 600;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            border: 2px solid #fbbf24;
         }
         .discount-badge {
-            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            background: #d1fae5;
             color: #065f46;
-            padding: 0.5rem 1rem;
+            padding: 0.25rem 0.5rem;
             border-radius: 9999px;
-            font-size: 0.875rem;
+            font-size: 0.7rem;
             font-weight: 600;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            border: 2px solid #10b981;
         }
         .phone-input {
             display: flex;
             align-items: center;
         }
         .phone-prefix {
-            background: #fef2f2;
-            padding: 0.875rem 1rem;
-            border: 2px solid #fecaca;
+            background: #f3f4f6;
+            padding: 0.75rem 0.75rem;
+            border: 1px solid #d1d5db;
             border-right: none;
-            border-radius: 0.75rem 0 0 0.75rem;
-            font-weight: 600;
-            color: #dc2626;
+            border-radius: 0.5rem 0 0 0.5rem;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        @media (min-width: 768px) {
+            .phone-prefix {
+                padding: 0.75rem 1rem;
+                font-size: 1rem;
+            }
         }
         .charges-breakdown {
-            background: #fef2f2;
-            border-radius: 0.75rem;
-            padding: 1.25rem;
-            margin-top: 1.25rem;
-            font-size: 0.875rem;
-            border: 2px solid #fecaca;
+            background: #f8fafc;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            margin-top: 1rem;
+            font-size: 0.8rem;
+        }
+        @media (min-width: 768px) {
+            .charges-breakdown {
+                padding: 1rem;
+                font-size: 0.875rem;
+            }
         }
         .charge-item {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 0.75rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 1px dashed #fca5a5;
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e5e7eb;
         }
         .charge-total {
-            border-top: 2px solid #dc2626;
-            padding-top: 1rem;
-            margin-top: 1rem;
-            font-weight: 700;
-            font-size: 1.125rem;
+            border-top: 1px solid #d1d5db;
+            padding-top: 0.5rem;
+            margin-top: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        @media (min-width: 768px) {
+            .charge-total {
+                font-size: 1rem;
+            }
         }
         .autocomplete-suggestions {
             position: absolute;
             background: white;
-            border: 2px solid #fecaca;
-            border-radius: 0.75rem;
-            max-height: 250px;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.375rem;
+            max-height: 200px;
             overflow-y: auto;
             z-index: 1000;
             width: 100%;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             display: none;
             margin-top: 2px;
         }
         .suggestion-item {
-            padding: 12px 16px;
+            padding: 8px 12px;
             cursor: pointer;
-            border-bottom: 1px solid #fee2e2;
-            transition: all 0.2s ease;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 0.875rem;
         }
         .suggestion-item:hover {
-            background-color: #fef2f2;
-            transform: translateX(5px);
+            background-color: #f8fafc;
         }
         .suggestion-item:last-child {
             border-bottom: none;
         }
         .suggestion-item.selected {
             background-color: #fef2f2;
-            border-left: 4px solid #dc2626;
+            border-left: 3px solid #dc2626;
         }
         .suggestion-name {
-            font-weight: 600;
+            font-weight: 500;
             color: #111827;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
         .suggestion-address {
             font-size: 0.75rem;
             color: #6b7280;
-            line-height: 1.4;
+            line-height: 1.2;
         }
         .location-search {
             position: relative;
         }
         .reverse-btn {
             position: absolute;
-            right: 140px;
+            right: 60px;
             top: 50%;
             transform: translateY(-50%);
-            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            background: #dc2626;
             color: white;
             border: none;
-            padding: 10px 12px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             cursor: pointer;
             z-index: 10;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(220, 38, 38, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+        @media (min-width: 768px) {
+            .reverse-btn {
+                right: 140px;
+                width: 36px;
+                height: 36px;
+            }
         }
         .reverse-btn:hover {
-            background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
-            transform: translateY(-50%) rotate(180deg);
-            box-shadow: 0 6px 12px rgba(220, 38, 38, 0.3);
+            background: #b91c1c;
         }
         .travel-time-info {
-            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-            border-left: 4px solid #3b82f6;
-            padding: 12px 16px;
-            border-radius: 0.75rem;
-            margin-top: 12px;
-            font-size: 0.875rem;
+            background: #eff6ff;
+            border-left: 3px solid #3b82f6;
+            padding: 6px 8px;
+            border-radius: 0.375rem;
+            margin-top: 6px;
+            font-size: 0.75rem;
             display: none;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        @media (min-width: 768px) {
+            .travel-time-info {
+                padding: 8px 12px;
+                font-size: 0.875rem;
+            }
         }
         .form-input {
-            transition: all 0.3s ease;
-            border: 2px solid #fecaca;
+            transition: all 0.2s ease;
+            border: 1px solid #d1d5db;
+            font-size: 0.95rem;
+        }
+        @media (min-width: 768px) {
+            .form-input {
+                font-size: 1rem;
+            }
         }
         .form-input:focus {
             border-color: #dc2626;
-            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
-            transform: translateY(-2px);
+            box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.1);
         }
         .form-select {
-            transition: all 0.3s ease;
-            border: 2px solid #fecaca;
+            transition: all 0.2s ease;
+            border: 1px solid #d1d5db;
             appearance: none;
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23dc2626' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
             background-position: right 0.5rem center;
             background-repeat: no-repeat;
-            background-size: 1.5em 1.5em;
+            background-size: 1.25em 1.25em;
+            font-size: 0.95rem;
+        }
+        @media (min-width: 768px) {
+            .form-select {
+                font-size: 1rem;
+            }
         }
         .form-select:focus {
             border-color: #dc2626;
-            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+            box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.1);
         }
         .vehicle-option {
-            transition: all 0.3s ease;
-            border: 2px solid #fecaca;
-            background: #fef2f2;
+            transition: all 0.2s ease;
+            border: 1px solid #e5e7eb;
+            background: white;
         }
         .vehicle-option:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
             border-color: #dc2626;
+            transform: translateY(-2px);
         }
         .vehicle-option.selected {
             border-color: #dc2626;
-            background: #fee2e2;
-            box-shadow: 0 10px 25px rgba(220, 38, 38, 0.15);
-            transform: translateY(-3px);
+            background: #fef2f2;
+            box-shadow: 0 4px 6px rgba(220, 38, 38, 0.1);
         }
         .submit-btn {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            transition: all 0.4s ease;
-            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);
-        }
-        .submit-btn:hover {
-            background: linear-gradient(135deg, #059669 0%, #047857 100%);
-            transform: translateY(-3px);
-            box-shadow: 0 15px 30px rgba(16, 185, 129, 0.3);
-        }
-        .pulse-animation {
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
-        }
-        .progress-bar {
-            height: 4px;
-            background: #fecaca;
-            border-radius: 2px;
-            margin: 8px 0;
-            overflow: hidden;
-        }
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #dc2626, #f87171);
-            width: 0%;
-            transition: width 0.5s ease;
-            border-radius: 2px;
-        }
-        .info-card {
-            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
-            border: 2px solid #fecaca;
-            border-radius: 0.75rem;
-            padding: 1rem;
-            margin-top: 0.5rem;
+            background: #10b981;
             transition: all 0.3s ease;
         }
-        .info-card:hover {
-            transform: translateX(5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        .submit-btn:hover {
+            background: #059669;
+            transform: translateY(-2px);
         }
-        .price-bubble {
-            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        .section-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            background: #dc2626;
             color: white;
-            padding: 1rem;
-            border-radius: 1rem;
-            text-align: center;
-            box-shadow: 0 10px 25px rgba(220, 38, 38, 0.2);
-            position: relative;
+            border-radius: 50%;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        @media (min-width: 768px) {
+            .section-number {
+                width: 28px;
+                height: 28px;
+                font-size: 0.875rem;
+            }
+        }
+        .info-tip {
+            background: #fef3c7;
+            border: 1px solid #fbbf24;
+            border-radius: 0.375rem;
+            padding: 6px 8px;
+            font-size: 0.75rem;
+            color: #92400e;
+            margin-top: 4px;
+        }
+        .coordinate-box {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 8px;
+            font-size: 0.75rem;
+        }
+        @media (min-width: 768px) {
+            .coordinate-box {
+                padding: 12px;
+                font-size: 0.875rem;
+            }
+        }
+        .progress-container {
+            height: 4px;
+            background: #e5e7eb;
+            border-radius: 2px;
+            margin: 6px 0 4px 0;
             overflow: hidden;
         }
-        .price-bubble::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
-            transform: rotate(45deg);
+        .progress-bar {
+            height: 100%;
+            background: #10b981;
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 2px;
         }
     </style>
 </head>
-<body class="bg-red-50 font-sans">
+<body class="bg-gray-50 font-sans">
 
-    <nav class="bg-white shadow-lg fixed w-full z-50 border-b-2 border-red-200">
-        <div class="max-w-7xl mx-auto px-4 h-20 flex justify-between items-center">
-            <a href="index.html" class="flex items-center gap-3"> 
-                <img src="https://github.com/Clean-Scripts/subhitravels/blob/main/subhi-logo.webp?raw=true" alt="Subhi Logo" class="h-12 w-auto">
-                <span class="font-bold text-2xl text-red-600">Subhi Tour & Travels</span>
+    <nav class="bg-white shadow-sm fixed w-full z-50 border-b">
+        <div class="max-w-7xl mx-auto px-3 h-16 flex justify-between items-center">
+            <a href="index.html" class="flex items-center gap-2"> 
+                <img src="https://github.com/Clean-Scripts/subhitravels/blob/main/subhi-logo.webp?raw=true" alt="Subhi Logo" class="h-8 w-auto">
+                <span class="font-bold text-lg text-red-600 hidden sm:inline">Subhi Tour & Travels</span>
             </a>
-            <a href="index.html" class="text-gray-700 hover:text-red-600 transition-all duration-300 font-medium px-4 py-2 rounded-lg hover:bg-red-50 flex items-center gap-2">
-                <i class="fas fa-home"></i> Back to Home
+            <a href="index.html" class="text-gray-700 hover:text-red-600 transition-colors text-sm font-medium px-3 py-1.5 rounded hover:bg-red-50 flex items-center gap-1">
+                <i class="fas fa-home text-xs"></i>
+                <span class="hidden sm:inline">Home</span>
             </a>
         </div>
     </nav>
 
-    <div class="min-h-screen pt-28 pb-12 px-4">
+    <div class="min-h-screen pt-20 pb-8 px-3">
         <div class="max-w-6xl mx-auto">
             <!-- Main Form -->
-            <div class="bg-white rounded-2xl shadow-2xl overflow-hidden mb-8 border-4 border-red-100">
-                <div class="bg-gradient-to-r from-red-600 via-red-500 to-red-600 p-8 text-white text-center relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-full h-full bg-black opacity-5"></div>
-                    <h2 class="text-4xl font-bold relative z-10 mb-3">Book Your Luxury Ride</h2>
-                    <p class="opacity-95 text-lg relative z-10">Premium A/C & Non A/C cars available across India</p>
-                    <div class="mt-4 flex justify-center gap-4 relative z-10">
-                        <div class="flex items-center gap-2">
-                            <i class="fas fa-shield-alt"></i>
-                            <span>100% Safe</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <i class="fas fa-rupee-sign"></i>
-                            <span>Best Price</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <i class="fas fa-clock"></i>
-                            <span>24/7 Service</span>
-                        </div>
-                    </div>
+            <div class="bg-white rounded-xl shadow-md overflow-hidden mb-6 border">
+                <div class="bg-red-600 p-4 text-white text-center">
+                    <h2 class="text-xl font-bold sm:text-2xl">Book Your Luxury Ride</h2>
+                    <p class="opacity-90 mt-1 text-sm sm:text-base">Premium Cars Available Across India</p>
                 </div>
                 
-                <form id="bookingForm" class="p-8 space-y-10">
+                <form id="bookingForm" class="p-4 space-y-6 sm:p-6 sm:space-y-8">
                     <!-- Personal Details Section -->
-                    <div class="space-y-6">
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center text-white font-bold">1</div>
-                            <h3 class="text-2xl font-bold text-gray-800">Personal Details</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center">
+                            <span class="section-number">1</span>
+                            <h3 class="text-lg font-bold text-gray-800 sm:text-xl">Personal Details</h3>
                         </div>
-                        <div class="grid md:grid-cols-2 gap-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                                    <i class="fas fa-user text-red-500"></i>
-                                    Your Name *
-                                </label>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Your Name *</label>
                                 <input type="text" id="name" required 
-                                       class="form-input w-full px-4 py-3.5 rounded-xl focus:ring-2 focus:ring-red-500 outline-none transition"
-                                       placeholder="Enter your full name">
-                                <div class="progress-bar">
-                                    <div class="progress-fill" id="nameProgress"></div>
+                                       class="form-input w-full px-3 py-2.5 rounded-lg outline-none"
+                                       placeholder="Enter your name">
+                                <div class="progress-container">
+                                    <div class="progress-bar" id="nameProgress"></div>
                                 </div>
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                                    <i class="fas fa-phone text-red-500"></i>
-                                    Mobile Number *
-                                </label>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Mobile Number *</label>
                                 <div class="phone-input">
                                     <span class="phone-prefix">+91</span>
                                     <input type="tel" id="number" required 
                                            maxlength="11"
-                                           class="w-full px-4 py-3.5 rounded-r-xl form-input focus:ring-2 focus:ring-red-500 outline-none transition"
+                                           class="w-full px-3 py-2.5 rounded-r-lg form-input outline-none"
                                            placeholder="99999 99999"
                                            oninput="formatPhoneNumber(this)">
                                 </div>
-                                <p class="text-xs text-gray-600 mt-2 ml-1">
-                                    <i class="fas fa-info-circle text-red-500 mr-1"></i>
-                                    Enter 10-digit mobile number
-                                </p>
+                                <p class="text-xs text-gray-500 mt-1">Enter 10-digit mobile number</p>
                             </div>
                         </div>
 
-                        <div class="grid md:grid-cols-2 gap-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                                    <i class="fas fa-users text-red-500"></i>
-                                    No. of Passengers *
-                                </label>
-                                <select id="people" required class="form-select w-full px-4 py-3.5 rounded-xl focus:ring-2 focus:ring-red-500 outline-none">
-                                    <option value="">Select number of passengers</option>
-                                    <option value="1">👤 1 Passenger</option>
-                                    <option value="2">👥 2 Passengers</option>
-                                    <option value="3">👥 3 Passengers</option>
-                                    <option value="4">👥 4 Passengers</option>
-                                    <option value="5">👥 5 Passengers</option>
-                                    <option value="6">👥 6+ Passengers</option>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">No. of Passengers *</label>
+                                <select id="people" required class="form-select w-full px-3 py-2.5 rounded-lg outline-none">
+                                    <option value="">Select passengers</option>
+                                    <option value="1">1 Passenger</option>
+                                    <option value="2">2 Passengers</option>
+                                    <option value="3">3 Passengers</option>
+                                    <option value="4">4 Passengers</option>
+                                    <option value="5">5 Passengers</option>
+                                    <option value="6">6+ Passengers</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                                    <i class="fas fa-suitcase text-red-500"></i>
-                                    Count of Bags *
-                                </label>
-                                <select id="bags" required class="form-select w-full px-4 py-3.5 rounded-xl focus:ring-2 focus:ring-red-500 outline-none">
-                                    <option value="">Select number of bags</option>
-                                    <option value="0">🎒 No bags</option>
-                                    <option value="1">🎒 1 Bag</option>
-                                    <option value="2">🎒 2 Bags</option>
-                                    <option value="3">🎒 3 Bags</option>
-                                    <option value="4">🎒 4+ Bags</option>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Count of Bags *</label>
+                                <select id="bags" required class="form-select w-full px-3 py-2.5 rounded-lg outline-none">
+                                    <option value="">Select bags</option>
+                                    <option value="0">No bags</option>
+                                    <option value="1">1 Bag</option>
+                                    <option value="2">2 Bags</option>
+                                    <option value="3">3 Bags</option>
+                                    <option value="4">4+ Bags</option>
                                 </select>
                             </div>
                         </div>
                     </div>
 
                     <!-- Location & Map Section -->
-                    <div class="space-y-6">
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center text-white font-bold">2</div>
-                            <h3 class="text-2xl font-bold text-gray-800">Journey Details</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center">
+                            <span class="section-number">2</span>
+                            <h3 class="text-lg font-bold text-gray-800 sm:text-xl">Journey Details</h3>
                         </div>
                         
-                        <div class="space-y-6">
-                            <!-- Pickup Location -->
-                            <div class="location-search">
-                                <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                                    <i class="fas fa-map-marker-alt text-green-500"></i>
-                                    Pickup Location *
-                                </label>
-                                <div class="relative">
-                                    <input type="text" id="pickupLocation" required 
-                                           class="form-input w-full px-4 py-3.5 rounded-xl focus:ring-2 focus:ring-red-500 outline-none transition pr-24"
-                                           placeholder="Type pickup address or click on map"
-                                           autocomplete="off">
-                                    <div class="absolute right-2 top-1/2 transform -translate-y-1/2 flex gap-2">
-                                        <button type="button" onclick="useCurrentLocation('pickup')" 
-                                                class="px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all duration-300 flex items-center gap-2 text-sm"
-                                                title="Use current location">
-                                            <i class="fas fa-location-arrow"></i>
-                                            <span class="hidden sm:inline">Current</span>
-                                        </button>
-                                    </div>
-                                    <div id="pickupSuggestions" class="autocomplete-suggestions"></div>
+                        <!-- Pickup Location -->
+                        <div class="location-search">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Pickup Location *</label>
+                            <div class="relative">
+                                <input type="text" id="pickupLocation" required 
+                                       class="form-input w-full px-3 py-2.5 rounded-lg outline-none pr-20"
+                                       placeholder="Type pickup address"
+                                       autocomplete="off">
+                                <div class="absolute right-1 top-1/2 transform -translate-y-1/2">
+                                    <button type="button" onclick="useCurrentLocation('pickup')" 
+                                            class="px-2 py-1.5 bg-blue-500 text-white rounded text-xs hover:bg-blue-600 transition flex items-center gap-1"
+                                            title="Use current location">
+                                        <i class="fas fa-location-arrow text-xs"></i>
+                                        <span class="hidden sm:inline">Current</span>
+                                    </button>
                                 </div>
-                                <div class="info-card">
-                                    <div class="flex items-center gap-2 text-sm">
-                                        <i class="fas fa-lightbulb text-yellow-500"></i>
-                                        <span class="font-medium">Tip:</span>
-                                        <span class="text-gray-600">Type address or select from map below</span>
-                                    </div>
-                                </div>
+                                <div id="pickupSuggestions" class="autocomplete-suggestions"></div>
                             </div>
-
-                            <!-- Swap Locations Button -->
-                            <div class="flex justify-center">
-                                <button type="button" onclick="reverseLocations()" 
-                                        class="reverse-btn"
-                                        title="Swap pickup and drop locations">
-                                    <i class="fas fa-exchange-alt"></i>
-                                </button>
+                            <div class="info-tip">
+                                <i class="fas fa-lightbulb mr-1"></i>
+                                Type address or select from map below
                             </div>
+                        </div>
 
-                            <!-- Drop Location -->
-                            <div class="location-search">
-                                <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                                    <i class="fas fa-map-marker-alt text-red-500"></i>
-                                    Drop Location *
-                                </label>
-                                <div class="relative">
-                                    <input type="text" id="dropLocation" required 
-                                           class="form-input w-full px-4 py-3.5 rounded-xl focus:ring-2 focus:ring-red-500 outline-none transition pr-10"
-                                           placeholder="Type drop address or click on map"
-                                           autocomplete="off">
-                                    <div id="dropSuggestions" class="autocomplete-suggestions"></div>
-                                </div>
+                        <!-- Swap Locations Button -->
+                        <div class="flex justify-center">
+                            <button type="button" onclick="reverseLocations()" 
+                                    class="reverse-btn"
+                                    title="Swap pickup and drop locations">
+                                <i class="fas fa-exchange-alt"></i>
+                            </button>
+                        </div>
+
+                        <!-- Drop Location -->
+                        <div class="location-search">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Drop Location *</label>
+                            <div class="relative">
+                                <input type="text" id="dropLocation" required 
+                                       class="form-input w-full px-3 py-2.5 rounded-lg outline-none"
+                                       placeholder="Type drop address"
+                                       autocomplete="off">
+                                <div id="dropSuggestions" class="autocomplete-suggestions"></div>
                             </div>
+                        </div>
 
-                            <!-- Date & Time -->
-                            <div class="grid md:grid-cols-2 gap-6">
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                                        <i class="fas fa-calendar-alt text-red-500"></i>
-                                        Pickup Date & Time *
-                                    </label>
-                                    <input type="datetime-local" id="pickup" required 
-                                           class="form-input w-full px-4 py-3.5 rounded-xl focus:ring-2 focus:ring-red-500 outline-none"
-                                           onchange="updateDropTime()">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                                        <i class="fas fa-calendar-check text-red-500"></i>
-                                        Drop Date & Time *
-                                    </label>
-                                    <input type="datetime-local" id="drop" required 
-                                           class="form-input w-full px-4 py-3.5 rounded-xl focus:ring-2 focus:ring-red-500 outline-none">
-                                    <div id="travelTimeInfo" class="travel-time-info">
-                                        <div class="flex items-center gap-2">
-                                            <i class="fas fa-clock text-blue-500"></i>
-                                            <span id="travelTimeText">Estimated travel time will be calculated</span>
-                                        </div>
+                        <!-- Date & Time -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Pickup Date & Time *</label>
+                                <input type="datetime-local" id="pickup" required 
+                                       class="form-input w-full px-3 py-2.5 rounded-lg outline-none"
+                                       onchange="updateDropTime()">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Drop Date & Time *</label>
+                                <input type="datetime-local" id="drop" required 
+                                       class="form-input w-full px-3 py-2.5 rounded-lg outline-none">
+                                <div id="travelTimeInfo" class="travel-time-info">
+                                    <div class="flex items-center gap-1">
+                                        <i class="fas fa-clock text-blue-500"></i>
+                                        <span id="travelTimeText">Estimated travel time will be calculated</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Map Container -->
-                        <div class="mt-6">
-                            <div class="flex justify-between items-center mb-4">
-                                <label class="block text-lg font-semibold text-gray-800 flex items-center gap-2">
-                                    <i class="fas fa-map text-red-500"></i>
-                                    Select Locations on Map
-                                </label>
-                                <div class="flex items-center gap-4">
-                                    <div class="flex items-center gap-2">
-                                        <div class="w-4 h-4 bg-green-500 rounded-full pulse-animation"></div>
-                                        <span class="text-sm font-medium">Pickup</span>
+                        <div class="mt-4">
+                            <div class="flex justify-between items-center mb-2">
+                                <label class="block text-sm font-medium text-gray-700">Select Locations on Map</label>
+                                <div class="flex items-center gap-2">
+                                    <div class="flex items-center gap-1">
+                                        <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                                        <span class="text-xs">Pickup</span>
                                     </div>
-                                    <div class="flex items-center gap-2">
-                                        <div class="w-4 h-4 bg-red-500 rounded-full"></div>
-                                        <span class="text-sm font-medium">Drop</span>
+                                    <div class="flex items-center gap-1">
+                                        <div class="w-2 h-2 bg-red-500 rounded-full"></div>
+                                        <span class="text-xs">Drop</span>
                                     </div>
                                 </div>
                             </div>
                             <div class="map-container">
                                 <div class="map-controls">
                                     <button type="button" onclick="useCurrentLocation('map')" class="map-btn">
-                                        <i class="fas fa-location-arrow"></i> Current
+                                        <i class="fas fa-location-arrow"></i>
+                                        <span class="hidden sm:inline">Current</span>
                                     </button>
                                     <button type="button" onclick="clearMap()" class="map-btn">
-                                        <i class="fas fa-trash"></i> Clear
+                                        <i class="fas fa-trash"></i>
+                                        <span class="hidden sm:inline">Clear</span>
                                     </button>
                                 </div>
                                 <div id="map"></div>
                             </div>
-                            <div class="grid grid-cols-2 gap-4 mt-4">
-                                <div class="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-xl border-2 border-green-200">
-                                    <div class="font-bold text-green-800 flex items-center gap-2">
-                                        <i class="fas fa-arrow-circle-up"></i>
-                                        Pickup Point
-                                    </div>
-                                    <div id="pickupCoords" class="text-green-600 mt-2 font-medium">📍 Not set - Click on map</div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
+                                <div class="coordinate-box">
+                                    <div class="font-medium text-green-700 text-sm">Pickup Point</div>
+                                    <div id="pickupCoords" class="text-green-600 text-xs mt-1">Not set - Click on map</div>
                                 </div>
-                                <div class="bg-gradient-to-r from-red-50 to-pink-50 p-4 rounded-xl border-2 border-red-200">
-                                    <div class="font-bold text-red-800 flex items-center gap-2">
-                                        <i class="fas fa-arrow-circle-down"></i>
-                                        Drop Point
-                                    </div>
-                                    <div id="dropCoords" class="text-red-600 mt-2 font-medium">📍 Not set - Click on map</div>
+                                <div class="coordinate-box">
+                                    <div class="font-medium text-red-700 text-sm">Drop Point</div>
+                                    <div id="dropCoords" class="text-red-600 text-xs mt-1">Not set - Click on map</div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Dynamic Pricing Factors -->
-                        <div id="pricingFactors" class="hidden mt-6">
-                            <div class="flex gap-3 flex-wrap">
+                        <div id="pricingFactors" class="hidden mt-4">
+                            <div class="flex gap-2 flex-wrap">
                                 <div id="urgentBadge" class="urgent-badge hidden">
-                                    <i class="fas fa-bolt mr-2"></i> Urgent Booking
+                                    <i class="fas fa-bolt mr-1"></i> Urgent
                                 </div>
                                 <div id="priorBookingBadge" class="discount-badge hidden">
-                                    <i class="fas fa-calendar-check mr-2"></i> Prior Booking
+                                    <i class="fas fa-calendar-check mr-1"></i> Prior Booking
                                 </div>
                                 <div id="longBookingBadge" class="discount-badge hidden">
-                                    <i class="fas fa-clock mr-2"></i> Long Duration
+                                    <i class="fas fa-clock mr-1"></i> Long Trip
                                 </div>
                             </div>
                         </div>
 
                         <!-- Distance & Charges Calculation -->
-                        <div id="calculationSection" class="hidden mt-8">
-                            <div class="bg-gradient-to-r from-red-50 to-pink-50 p-6 rounded-2xl border-3 border-red-200 shadow-lg">
-                                <h4 class="font-bold text-2xl text-gray-800 mb-4 flex items-center justify-between">
-                                    <span class="flex items-center gap-3">
+                        <div id="calculationSection" class="hidden mt-6">
+                            <div class="bg-gray-50 p-4 rounded-lg border">
+                                <h4 class="font-bold text-gray-800 mb-3 flex items-center justify-between">
+                                    <span class="flex items-center gap-2">
                                         <i class="fas fa-calculator text-red-600"></i>
                                         Estimated Calculation
                                     </span>
                                     <button type="button" onclick="generateInvoice()" 
-                                            class="px-5 py-2.5 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-xl hover:from-red-700 hover:to-red-600 transition-all duration-300 flex items-center gap-2 text-sm shadow-lg hover:shadow-xl">
+                                            class="px-3 py-1.5 bg-red-500 text-white rounded-lg hover:bg-red-600 transition text-xs sm:text-sm flex items-center gap-1">
                                         <i class="fas fa-file-pdf"></i>
-                                        Generate Invoice
+                                        <span class="hidden sm:inline">Invoice</span>
                                     </button>
                                 </h4>
                                 
-                                <div class="grid md:grid-cols-4 gap-5 mb-6">
-                                    <div class="text-center p-5 bg-white rounded-xl shadow-lg border-2 border-blue-200 hover:border-blue-300 transition-all duration-300">
-                                        <div class="text-3xl font-bold text-blue-600" id="distanceValue">0</div>
-                                        <div class="text-sm font-semibold text-gray-700 mt-2">Distance (km)</div>
-                                        <i class="fas fa-road text-blue-400 text-lg mt-2"></i>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+                                    <div class="text-center p-2 bg-white rounded-lg border">
+                                        <div class="text-lg font-bold text-blue-600" id="distanceValue">0</div>
+                                        <div class="text-xs text-gray-600">Distance (km)</div>
                                     </div>
-                                    <div class="text-center p-5 bg-white rounded-xl shadow-lg border-2 border-purple-200 hover:border-purple-300 transition-all duration-300">
-                                        <div class="text-3xl font-bold text-purple-600" id="durationValue">0</div>
-                                        <div class="text-sm font-semibold text-gray-700 mt-2">Duration (hrs)</div>
-                                        <i class="fas fa-clock text-purple-400 text-lg mt-2"></i>
+                                    <div class="text-center p-2 bg-white rounded-lg border">
+                                        <div class="text-lg font-bold text-purple-600" id="durationValue">0</div>
+                                        <div class="text-xs text-gray-600">Duration (hrs)</div>
                                     </div>
-                                    <div class="text-center p-5 bg-white rounded-xl shadow-lg border-2 border-green-200 hover:border-green-300 transition-all duration-300">
-                                        <div class="text-3xl font-bold text-green-600" id="basePrice">₹0</div>
-                                        <div class="text-sm font-semibold text-gray-700 mt-2">Base Fare</div>
-                                        <i class="fas fa-tag text-green-400 text-lg mt-2"></i>
+                                    <div class="text-center p-2 bg-white rounded-lg border">
+                                        <div class="text-lg font-bold text-green-600" id="basePrice">₹0</div>
+                                        <div class="text-xs text-gray-600">Base Fare</div>
                                     </div>
-                                    <div class="price-bubble">
-                                        <div class="text-4xl font-bold" id="estimatedPrice">₹0</div>
-                                        <div class="text-sm font-medium opacity-90 mt-2">Final Fare</div>
-                                        <i class="fas fa-rupee-sign text-lg mt-3 opacity-80"></i>
+                                    <div class="text-center p-2 bg-white rounded-lg border-2 border-red-500">
+                                        <div class="text-xl font-bold text-red-600">₹<span id="estimatedPrice">0</span></div>
+                                        <div class="text-xs text-gray-600">Final Fare</div>
                                     </div>
                                 </div>
                                 
                                 <!-- Charges Breakdown -->
                                 <div id="chargesBreakdown" class="charges-breakdown hidden">
-                                    <div class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                                        <i class="fas fa-receipt text-red-500"></i>
-                                        Fare Breakdown
-                                    </div>
+                                    <div class="text-sm font-medium text-gray-800 mb-2">Fare Breakdown</div>
                                     <div class="charge-item">
-                                        <span class="font-medium">Base Fare (₹<span id="ratePerKm">0</span>/km × <span id="distanceKm">0</span>km)</span>
-                                        <span class="font-bold" id="baseFareAmount">₹0</span>
+                                        <span>Base Fare (₹<span id="ratePerKm">0</span>/km × <span id="distanceKm">0</span>km)</span>
+                                        <span id="baseFareAmount">₹0</span>
                                     </div>
                                     <div id="urgentChargeItem" class="charge-item hidden">
-                                        <span class="font-medium text-amber-700">Urgent Booking Surcharge (20%)</span>
-                                        <span class="font-bold text-amber-700" id="urgentChargeAmount">₹0</span>
+                                        <span class="text-amber-700">Urgent Surcharge (20%)</span>
+                                        <span class="text-amber-700" id="urgentChargeAmount">₹0</span>
                                     </div>
                                     <div id="priorDiscountItem" class="charge-item hidden">
-                                        <span class="font-medium text-green-700">Prior Booking Discount (15%)</span>
-                                        <span class="font-bold text-green-700" id="priorDiscountAmount">-₹0</span>
+                                        <span class="text-green-700">Prior Booking (15%)</span>
+                                        <span class="text-green-700" id="priorDiscountAmount">-₹0</span>
                                     </div>
                                     <div id="longDiscountItem" class="charge-item hidden">
-                                        <span class="font-medium text-green-700">Long Duration Discount (10%)</span>
-                                        <span class="font-bold text-green-700" id="longDiscountAmount">-₹0</span>
+                                        <span class="text-green-700">Long Trip (10%)</span>
+                                        <span class="text-green-700" id="longDiscountAmount">-₹0</span>
                                     </div>
                                     <div class="charge-item charge-total">
-                                        <span class="text-lg font-bold">Total Fare</span>
-                                        <span class="text-2xl font-bold text-red-600" id="totalFareAmount">₹0</span>
+                                        <span class="font-bold">Total Fare</span>
+                                        <span class="text-lg font-bold text-red-600" id="totalFareAmount">₹0</span>
                                     </div>
                                 </div>
                             </div>
@@ -626,77 +609,57 @@
                     </div>
 
                     <!-- Vehicle Selection -->
-                    <div class="space-y-6">
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center text-white font-bold">3</div>
-                            <h3 class="text-2xl font-bold text-gray-800">Select Your Vehicle</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center">
+                            <span class="section-number">3</span>
+                            <h3 class="text-lg font-bold text-gray-800 sm:text-xl">Select Your Vehicle</h3>
                         </div>
-                        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
-                            <div class="vehicle-option border rounded-xl p-5 cursor-pointer" data-type="dzire" data-rate="15">
-                                <div class="flex items-center gap-4">
-                                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                                        <i class="fas fa-car text-blue-500 text-2xl"></i>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                            <div class="vehicle-option border rounded-lg p-3 cursor-pointer" data-type="dzire" data-rate="15">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 bg-blue-100 rounded flex items-center justify-center">
+                                        <i class="fas fa-car text-blue-500"></i>
                                     </div>
-                                    <div class="flex-1">
-                                        <div class="font-bold text-gray-800 text-lg">Swift Dzire</div>
-                                        <div class="text-sm text-gray-600 flex items-center gap-1">
-                                            <i class="fas fa-user-friends"></i>
-                                            Up to 4 passengers
-                                        </div>
-                                        <div class="text-sm font-bold text-blue-600 mt-2">
-                                            <i class="fas fa-rupee-sign"></i> 15/km
-                                        </div>
+                                    <div>
+                                        <div class="font-bold text-gray-800">Swift Dzire</div>
+                                        <div class="text-xs text-gray-600">Up to 4 passengers</div>
+                                        <div class="text-xs font-bold text-blue-600 mt-1">₹15/km</div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="vehicle-option border rounded-xl p-5 cursor-pointer" data-type="ertiga" data-rate="20">
-                                <div class="flex items-center gap-4">
-                                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                                        <i class="fas fa-car text-green-500 text-2xl"></i>
+                            <div class="vehicle-option border rounded-lg p-3 cursor-pointer" data-type="ertiga" data-rate="20">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 bg-green-100 rounded flex items-center justify-center">
+                                        <i class="fas fa-car text-green-500"></i>
                                     </div>
-                                    <div class="flex-1">
-                                        <div class="font-bold text-gray-800 text-lg">Ertiga</div>
-                                        <div class="text-sm text-gray-600 flex items-center gap-1">
-                                            <i class="fas fa-user-friends"></i>
-                                            Up to 6 passengers
-                                        </div>
-                                        <div class="text-sm font-bold text-green-600 mt-2">
-                                            <i class="fas fa-rupee-sign"></i> 20/km
-                                        </div>
+                                    <div>
+                                        <div class="font-bold text-gray-800">Ertiga</div>
+                                        <div class="text-xs text-gray-600">Up to 6 passengers</div>
+                                        <div class="text-xs font-bold text-green-600 mt-1">₹20/km</div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="vehicle-option border rounded-xl p-5 cursor-pointer" data-type="crysta" data-rate="25">
-                                <div class="flex items-center gap-4">
-                                    <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                                        <i class="fas fa-car text-purple-500 text-2xl"></i>
+                            <div class="vehicle-option border rounded-lg p-3 cursor-pointer" data-type="crysta" data-rate="25">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 bg-purple-100 rounded flex items-center justify-center">
+                                        <i class="fas fa-car text-purple-500"></i>
                                     </div>
-                                    <div class="flex-1">
-                                        <div class="font-bold text-gray-800 text-lg">Toyota Crysta</div>
-                                        <div class="text-sm text-gray-600 flex items-center gap-1">
-                                            <i class="fas fa-crown"></i>
-                                            Premium (6+ passengers)
-                                        </div>
-                                        <div class="text-sm font-bold text-purple-600 mt-2">
-                                            <i class="fas fa-rupee-sign"></i> 25/km
-                                        </div>
+                                    <div>
+                                        <div class="font-bold text-gray-800">Toyota Crysta</div>
+                                        <div class="text-xs text-gray-600">Premium (6+ passengers)</div>
+                                        <div class="text-xs font-bold text-purple-600 mt-1">₹25/km</div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="vehicle-option border rounded-xl p-5 cursor-pointer" data-type="innova" data-rate="22">
-                                <div class="flex items-center gap-4">
-                                    <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
-                                        <i class="fas fa-car text-red-500 text-2xl"></i>
+                            <div class="vehicle-option border rounded-lg p-3 cursor-pointer" data-type="innova" data-rate="22">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 bg-red-100 rounded flex items-center justify-center">
+                                        <i class="fas fa-car text-red-500"></i>
                                     </div>
-                                    <div class="flex-1">
-                                        <div class="font-bold text-gray-800 text-lg">Innova</div>
-                                        <div class="text-sm text-gray-600 flex items-center gap-1">
-                                            <i class="fas fa-gem"></i>
-                                            Luxury (6+ passengers)
-                                        </div>
-                                        <div class="text-sm font-bold text-red-600 mt-2">
-                                            <i class="fas fa-rupee-sign"></i> 22/km
-                                        </div>
+                                    <div>
+                                        <div class="font-bold text-gray-800">Innova</div>
+                                        <div class="text-xs text-gray-600">Luxury (6+ passengers)</div>
+                                        <div class="text-xs font-bold text-red-600 mt-1">₹22/km</div>
                                     </div>
                                 </div>
                             </div>
@@ -707,36 +670,31 @@
 
                     <!-- Special Requirements -->
                     <div>
-                        <div class="flex items-center gap-3 mb-4">
-                            <div class="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center text-white font-bold">4</div>
-                            <h3 class="text-2xl font-bold text-gray-800">Special Requirements [If Any]</h3>
+                        <div class="flex items-center mb-3">
+                            <span class="section-number">4</span>
+                            <h3 class="text-lg font-bold text-gray-800 sm:text-xl">Special Requirements</h3>
                         </div>
-                        <textarea id="special" rows="4" 
-                                  class="form-input w-full px-4 py-4 rounded-xl focus:ring-2 focus:ring-red-500 outline-none resize-none"
-                                  placeholder="E.g., Need roof carrier, baby seat, multiple stops, etc. 
-                                            *Note: These requests can only be fulfilled as per availability"></textarea>
-                        <div class="flex items-center gap-2 mt-3 text-sm text-gray-600">
+                        <textarea id="special" rows="3" 
+                                  class="form-input w-full px-3 py-2.5 rounded-lg outline-none resize-none"
+                                  placeholder="E.g., roof carrier, baby seat, multiple stops, etc. *Optional"></textarea>
+                        <p class="text-xs text-gray-500 mt-1">
                             <i class="fas fa-info-circle text-red-500"></i>
-                            <span>Optional - Add any special requests or requirements</span>
-                        </div>
+                            Optional - Add any special requests or requirements
+                        </p>
                     </div>
 
                     <!-- Submit Button -->
                     <button type="submit" 
-                            class="submit-btn w-full text-white font-bold text-xl py-5 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-3">
-                        <i class="fab fa-whatsapp text-3xl"></i>
-                        <div class="text-left">
-                            <div class="text-2xl">Send Booking Request via WhatsApp</div>
-                            <div class="text-sm opacity-90 font-normal">Get instant confirmation</div>
-                        </div>
-                        <i class="fas fa-arrow-right text-xl"></i>
+                            class="submit-btn w-full text-white font-bold text-base py-3 rounded-lg shadow hover:shadow-md transition flex items-center justify-center gap-2">
+                        <i class="fab fa-whatsapp text-xl"></i>
+                        Send Booking Request via WhatsApp
                     </button>
 
                     <!-- Security Note -->
-                    <div class="text-center text-sm text-gray-600 pt-4 border-t border-red-200">
-                        <div class="flex items-center justify-center gap-2">
+                    <div class="text-center text-xs text-gray-600 pt-3 border-t">
+                        <div class="flex items-center justify-center gap-1">
                             <i class="fas fa-shield-alt text-green-500"></i>
-                            <span>Your information is 100% secure. We'll contact you within 15 minutes for confirmation.</span>
+                            <span>Your information is secure. We'll contact you within 15 minutes.</span>
                         </div>
                     </div>
                 </form>
@@ -744,19 +702,16 @@
 
             <!-- Invoice Preview -->
             <div id="invoicePreview" class="hidden">
-                <div class="bg-white rounded-2xl shadow-2xl overflow-hidden p-8 border-4 border-red-100">
-                    <div class="flex justify-between items-center mb-8">
-                        <h3 class="text-3xl font-bold text-gray-800 flex items-center gap-3">
-                            <i class="fas fa-file-invoice text-red-500"></i>
-                            Booking Invoice
-                        </h3>
-                        <div class="flex gap-3">
+                <div class="bg-white rounded-xl shadow-md overflow-hidden p-4 border">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-bold text-gray-800 sm:text-xl">Booking Invoice</h3>
+                        <div class="flex gap-2">
                             <button onclick="downloadPDF()" 
-                                    class="px-5 py-2.5 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-xl hover:from-red-700 hover:to-red-600 transition-all duration-300 flex items-center gap-2 shadow-lg hover:shadow-xl">
-                                <i class="fas fa-download"></i> Download PDF
+                                    class="px-3 py-1.5 bg-red-500 text-white rounded-lg hover:bg-red-600 transition text-xs flex items-center gap-1">
+                                <i class="fas fa-download"></i> PDF
                             </button>
                             <button onclick="printInvoice()" 
-                                    class="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all duration-300 flex items-center gap-2 shadow-lg hover:shadow-xl">
+                                    class="px-3 py-1.5 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition text-xs flex items-center gap-1">
                                 <i class="fas fa-print"></i> Print
                             </button>
                         </div>
@@ -799,11 +754,6 @@
                 value = value.replace(/(\d{5})(\d{0,5})/, '$1 $2');
             }
             input.value = value.substring(0, 11);
-            
-            // Update progress bar
-            if (value.length >= 10) {
-                document.getElementById('nameProgress').style.width = '100%';
-            }
         }
 
         // Name input progress
@@ -913,7 +863,7 @@
 
             // Initialize with current time for pickup
             const now = new Date();
-            now.setMinutes(now.getMinutes() + 30); // Add 30 minutes buffer
+            now.setMinutes(now.getMinutes() + 30);
             const formattedNow = now.toISOString().slice(0, 16);
             document.getElementById('pickup').value = formattedNow;
         });
@@ -1038,7 +988,7 @@
                 pickupLatLng = latLng;
                 updateMarker('pickup', latLng);
                 document.getElementById('pickupCoords').innerHTML = 
-                    `📍 ${latLng.lat.toFixed(4)}, ${latLng.lng.toFixed(4)}<br><small>${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</small>`;
+                    `${latLng.lat.toFixed(4)}, ${latLng.lng.toFixed(4)}`;
                 
                 // Reverse geocode to get address
                 reverseGeocode(latLng, 'pickup');
@@ -1046,7 +996,7 @@
                 dropLatLng = latLng;
                 updateMarker('drop', latLng);
                 document.getElementById('dropCoords').innerHTML = 
-                    `📍 ${latLng.lat.toFixed(4)}, ${latLng.lng.toFixed(4)}<br><small>${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</small>`;
+                    `${latLng.lat.toFixed(4)}, ${latLng.lng.toFixed(4)}`;
                 
                 // Show calculation section
                 document.getElementById('calculationSection').classList.remove('hidden');
@@ -1079,7 +1029,7 @@
         // Update marker on map
         function updateMarker(type, latLng) {
             const color = type === 'pickup' ? '#10b981' : '#ef4444';
-            const iconSize = type === 'pickup' ? 30 : 28;
+            const iconSize = 24;
             
             const markerIcon = L.divIcon({
                 className: 'custom-div-icon',
@@ -1089,15 +1039,14 @@
                         width: ${iconSize}px; 
                         height: ${iconSize}px; 
                         border-radius: 50%; 
-                        border: 4px solid white; 
-                        box-shadow: 0 4px 12px rgba(0,0,0,0.3); 
+                        border: 3px solid white; 
+                        box-shadow: 0 2px 4px rgba(0,0,0,0.3); 
                         display: flex; 
                         align-items: center; 
                         justify-content: center; 
                         color: white; 
                         font-weight: bold;
-                        font-size: 14px;
-                        animation: pulse 2s infinite;
+                        font-size: 12px;
                     ">${type === 'pickup' ? 'P' : 'D'}</div>
                 `,
                 iconSize: [iconSize, iconSize],
@@ -1108,13 +1057,13 @@
                 if (pickupMarker) map.removeLayer(pickupMarker);
                 pickupMarker = L.marker(latLng, { icon: markerIcon })
                     .addTo(map)
-                    .bindPopup(`<strong>Pickup Point</strong><br>${document.getElementById('pickupLocation').value || 'Selected location'}`)
+                    .bindPopup(`<strong>Pickup Point</strong><br>${document.getElementById('pickupLocation').value.substring(0, 50) || 'Selected location'}`)
                     .openPopup();
             } else {
                 if (dropMarker) map.removeLayer(dropMarker);
                 dropMarker = L.marker(latLng, { icon: markerIcon })
                     .addTo(map)
-                    .bindPopup(`<strong>Drop Point</strong><br>${document.getElementById('dropLocation').value || 'Selected location'}`)
+                    .bindPopup(`<strong>Drop Point</strong><br>${document.getElementById('dropLocation').value.substring(0, 50) || 'Selected location'}`)
                     .openPopup();
             }
         }
@@ -1128,7 +1077,7 @@
 
             const button = event.currentTarget;
             const originalHTML = button.innerHTML;
-            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Locating...';
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
             button.disabled = true;
 
             navigator.geolocation.getCurrentPosition(
@@ -1182,19 +1131,12 @@
             
             // Update coordinate displays
             document.getElementById('pickupCoords').innerHTML = 
-                `📍 ${pickupLatLng.lat.toFixed(4)}, ${pickupLatLng.lng.toFixed(4)}`;
+                `${pickupLatLng.lat.toFixed(4)}, ${pickupLatLng.lng.toFixed(4)}`;
             document.getElementById('dropCoords').innerHTML = 
-                `📍 ${dropLatLng.lat.toFixed(4)}, ${dropLatLng.lng.toFixed(4)}`;
+                `${dropLatLng.lat.toFixed(4)}, ${dropLatLng.lng.toFixed(4)}`;
             
             // Recalculate route
             calculateRoute();
-            
-            // Add animation effect
-            const button = event.currentTarget;
-            button.style.transform = 'translateY(-50%) rotate(360deg)';
-            setTimeout(() => {
-                button.style.transform = 'translateY(-50%)';
-            }, 500);
         }
 
         // Clear map
@@ -1208,8 +1150,8 @@
             
             document.getElementById('pickupLocation').value = '';
             document.getElementById('dropLocation').value = '';
-            document.getElementById('pickupCoords').innerHTML = '📍 Not set - Click on map';
-            document.getElementById('dropCoords').innerHTML = '📍 Not set - Click on map';
+            document.getElementById('pickupCoords').innerHTML = 'Not set - Click on map';
+            document.getElementById('dropCoords').innerHTML = 'Not set - Click on map';
             document.getElementById('calculationSection').classList.add('hidden');
             document.getElementById('pricingFactors').classList.add('hidden');
             document.getElementById('travelTimeInfo').style.display = 'none';
@@ -1238,7 +1180,7 @@
                 routeWhileDragging: false,
                 showAlternatives: false,
                 lineOptions: {
-                    styles: [{color: '#dc2626', weight: 5, opacity: 0.8, dashArray: '10, 10'}]
+                    styles: [{color: '#dc2626', weight: 4, opacity: 0.7}]
                 },
                 createMarker: function() { return null; },
                 router: L.Routing.osrmv1({
@@ -1321,14 +1263,10 @@
             isPriorBooking = hoursUntilPickup > 168;
             isLongBooking = tripDuration > 8;
             
-            // Update badges with animation
-            const urgentBadge = document.getElementById('urgentBadge');
-            const priorBadge = document.getElementById('priorBookingBadge');
-            const longBadge = document.getElementById('longBookingBadge');
-            
-            urgentBadge.classList.toggle('hidden', !isUrgent);
-            priorBadge.classList.toggle('hidden', !isPriorBooking);
-            longBadge.classList.toggle('hidden', !isLongBooking);
+            // Update badges
+            document.getElementById('urgentBadge').classList.toggle('hidden', !isUrgent);
+            document.getElementById('priorBookingBadge').classList.toggle('hidden', !isPriorBooking);
+            document.getElementById('longBookingBadge').classList.toggle('hidden', !isLongBooking);
             
             // Base calculation
             const baseFare = vehicleRate * parseFloat(distanceKm);
@@ -1381,23 +1319,8 @@
                 document.getElementById('longDiscountAmount').textContent = `-₹${longDiscount.toFixed(0)}`;
             }
             
-            // Animate price update
-            const priceElement = document.getElementById('estimatedPrice');
-            const totalElement = document.getElementById('totalFareAmount');
-            const oldPrice = parseFloat(priceElement.textContent) || 0;
-            const newPrice = totalFare.toFixed(0);
-            
-            if (oldPrice !== parseFloat(newPrice)) {
-                priceElement.style.transform = 'scale(1.2)';
-                totalElement.style.transform = 'scale(1.1)';
-                setTimeout(() => {
-                    priceElement.style.transform = 'scale(1)';
-                    totalElement.style.transform = 'scale(1)';
-                }, 300);
-            }
-            
-            priceElement.textContent = newPrice;
-            totalElement.textContent = `₹${newPrice}`;
+            document.getElementById('totalFareAmount').textContent = `₹${totalFare.toFixed(0)}`;
+            document.getElementById('estimatedPrice').textContent = totalFare.toFixed(0);
             
             // Show breakdown
             document.getElementById('chargesBreakdown').classList.remove('hidden');
@@ -1409,148 +1332,120 @@
             const now = new Date();
             
             invoiceContent.innerHTML = `
-                <div class="mb-8">
-                    <div class="flex justify-between items-start mb-6">
+                <div class="mb-6">
+                    <div class="flex justify-between items-start mb-4">
                         <div>
-                            <div class="flex items-center gap-3 mb-3">
-                                <img src="https://github.com/Clean-Scripts/subhitravels/blob/main/subhi-logo.webp?raw=true" alt="Subhi Logo" class="h-16 w-auto">
+                            <div class="flex items-center gap-2 mb-2">
+                                <img src="https://github.com/Clean-Scripts/subhitravels/blob/main/subhi-logo.webp?raw=true" alt="Subhi Logo" class="h-10 w-auto">
                                 <div>
-                                    <h2 class="text-3xl font-bold text-red-600">Subhi Tour & Travels</h2>
-                                    <p class="text-gray-600">Premium Car Rental Services</p>
-                                    <p class="text-gray-600">📞 +91 62649 50669 | 🌐 All Over India</p>
+                                    <h2 class="text-xl font-bold text-red-600">Subhi Tour & Travels</h2>
+                                    <p class="text-sm text-gray-600">Premium Car Rental Services</p>
                                 </div>
                             </div>
                         </div>
-                        <div class="text-right bg-red-50 p-4 rounded-xl">
-                            <div class="text-2xl font-bold text-red-600 mb-2">BOOKING INVOICE</div>
-                            <div class="text-gray-700 font-medium">#SUB${Math.floor(10000 + Math.random() * 90000)}</div>
-                            <div class="text-gray-600">${now.toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</div>
-                            <div class="text-gray-600">${now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+                        <div class="text-right">
+                            <div class="text-base font-bold text-red-600 mb-1">BOOKING INVOICE</div>
+                            <div class="text-xs text-gray-700">#SUB${Math.floor(10000 + Math.random() * 90000)}</div>
+                            <div class="text-xs text-gray-600">${now.toLocaleDateString()}</div>
                         </div>
                     </div>
                     
-                    <div class="grid grid-cols-2 gap-8 mb-8">
-                        <div class="bg-gradient-to-r from-red-50 to-pink-50 p-5 rounded-xl border-2 border-red-200">
-                            <h3 class="font-bold text-xl text-gray-800 mb-4 flex items-center gap-2">
-                                <i class="fas fa-user-circle text-red-500"></i>
-                                Customer Details
-                            </h3>
-                            <div class="space-y-2">
-                                <p><strong class="text-gray-700">Name:</strong> ${document.getElementById('name').value || 'N/A'}</p>
-                                <p><strong class="text-gray-700">Phone:</strong> +91 ${document.getElementById('number').value || 'N/A'}</p>
-                                <p><strong class="text-gray-700">Passengers:</strong> ${document.getElementById('people').value || '0'}</p>
-                                <p><strong class="text-gray-700">Bags:</strong> ${document.getElementById('bags').value || '0'}</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div class="bg-red-50 p-3 rounded-lg border border-red-200">
+                            <h3 class="font-bold text-gray-800 mb-2 text-sm">Customer Details</h3>
+                            <div class="space-y-1 text-xs">
+                                <p><strong>Name:</strong> ${document.getElementById('name').value || 'N/A'}</p>
+                                <p><strong>Phone:</strong> +91 ${document.getElementById('number').value || 'N/A'}</p>
+                                <p><strong>Passengers:</strong> ${document.getElementById('people').value || '0'}</p>
+                                <p><strong>Bags:</strong> ${document.getElementById('bags').value || '0'}</p>
                             </div>
                         </div>
-                        <div class="bg-gradient-to-r from-red-50 to-pink-50 p-5 rounded-xl border-2 border-red-200">
-                            <h3 class="font-bold text-xl text-gray-800 mb-4 flex items-center gap-2">
-                                <i class="fas fa-route text-red-500"></i>
-                                Journey Details
-                            </h3>
-                            <div class="space-y-2">
-                                <p><strong class="text-gray-700">Pickup:</strong> ${document.getElementById('pickupLocation').value || 'N/A'}</p>
-                                <p><strong class="text-gray-700">Time:</strong> ${document.getElementById('pickup').value ? new Date(document.getElementById('pickup').value).toLocaleString() : 'N/A'}</p>
-                                <p><strong class="text-gray-700">Drop:</strong> ${document.getElementById('dropLocation').value || 'N/A'}</p>
-                                <p><strong class="text-gray-700">Time:</strong> ${document.getElementById('drop').value ? new Date(document.getElementById('drop').value).toLocaleString() : 'N/A'}</p>
+                        <div class="bg-red-50 p-3 rounded-lg border border-red-200">
+                            <h3 class="font-bold text-gray-800 mb-2 text-sm">Journey Details</h3>
+                            <div class="space-y-1 text-xs">
+                                <p><strong>Pickup:</strong> ${document.getElementById('pickupLocation').value || 'N/A'}</p>
+                                <p><strong>Time:</strong> ${document.getElementById('pickup').value ? new Date(document.getElementById('pickup').value).toLocaleString() : 'N/A'}</p>
+                                <p><strong>Drop:</strong> ${document.getElementById('dropLocation').value || 'N/A'}</p>
+                                <p><strong>Time:</strong> ${document.getElementById('drop').value ? new Date(document.getElementById('drop').value).toLocaleString() : 'N/A'}</p>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="mb-8">
-                        <h3 class="font-bold text-2xl text-gray-800 mb-6 flex items-center gap-3">
-                            <i class="fas fa-receipt text-red-500"></i>
-                            Fare Breakdown
-                        </h3>
-                        <div class="overflow-x-auto rounded-xl border-2 border-red-200">
-                            <table class="w-full">
-                                <thead class="bg-red-600 text-white">
+                    <div class="mb-4">
+                        <h3 class="font-bold text-gray-800 mb-2 text-sm">Fare Breakdown</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-xs">
+                                <thead class="bg-red-100">
                                     <tr>
-                                        <th class="p-4 text-left">Description</th>
-                                        <th class="p-4 text-left">Rate</th>
-                                        <th class="p-4 text-left">Distance</th>
-                                        <th class="p-4 text-left">Amount</th>
+                                        <th class="p-2 text-left">Description</th>
+                                        <th class="p-2 text-left">Rate</th>
+                                        <th class="p-2 text-left">Distance</th>
+                                        <th class="p-2 text-left">Amount</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr class="border-b border-red-200 hover:bg-red-50">
-                                        <td class="p-4 font-medium">${document.getElementById('vehicleType').value.toUpperCase()} (Base Fare)</td>
-                                        <td class="p-4">₹${vehicleRate}/km</td>
-                                        <td class="p-4">${distanceKm} km</td>
-                                        <td class="p-4 font-bold">₹${document.getElementById('basePrice').textContent.replace('₹', '')}</td>
+                                    <tr class="border-b">
+                                        <td class="p-2">${document.getElementById('vehicleType').value.toUpperCase()} (Base Fare)</td>
+                                        <td class="p-2">₹${vehicleRate}/km</td>
+                                        <td class="p-2">${distanceKm} km</td>
+                                        <td class="p-2 font-bold">₹${document.getElementById('basePrice').textContent.replace('₹', '')}</td>
                                     </tr>
                                     ${isUrgent ? `
-                                    <tr class="border-b border-red-200 hover:bg-red-50">
-                                        <td class="p-4 font-medium text-amber-700">Urgent Booking Surcharge (20%)</td>
-                                        <td class="p-4">-</td>
-                                        <td class="p-4">-</td>
-                                        <td class="p-4 font-bold text-amber-700">₹${document.getElementById('urgentChargeAmount').textContent.replace('-₹', '')}</td>
+                                    <tr class="border-b">
+                                        <td class="p-2 text-amber-700">Urgent Surcharge (20%)</td>
+                                        <td class="p-2">-</td>
+                                        <td class="p-2">-</td>
+                                        <td class="p-2 font-bold text-amber-700">₹${document.getElementById('urgentChargeAmount').textContent.replace('-₹', '')}</td>
                                     </tr>
                                     ` : ''}
                                     ${isPriorBooking ? `
-                                    <tr class="border-b border-red-200 hover:bg-red-50">
-                                        <td class="p-4 font-medium text-green-700">Prior Booking Discount (15%)</td>
-                                        <td class="p-4">-</td>
-                                        <td class="p-4">-</td>
-                                        <td class="p-4 font-bold text-green-700">-₹${document.getElementById('priorDiscountAmount').textContent.replace('-₹', '')}</td>
+                                    <tr class="border-b">
+                                        <td class="p-2 text-green-700">Prior Booking (15%)</td>
+                                        <td class="p-2">-</td>
+                                        <td class="p-2">-</td>
+                                        <td class="p-2 font-bold text-green-700">-₹${document.getElementById('priorDiscountAmount').textContent.replace('-₹', '')}</td>
                                     </tr>
                                     ` : ''}
                                     ${isLongBooking ? `
-                                    <tr class="border-b border-red-200 hover:bg-red-50">
-                                        <td class="p-4 font-medium text-green-700">Long Duration Discount (10%)</td>
-                                        <td class="p-4">-</td>
-                                        <td class="p-4">-</td>
-                                        <td class="p-4 font-bold text-green-700">-₹${document.getElementById('longDiscountAmount').textContent.replace('-₹', '')}</td>
+                                    <tr class="border-b">
+                                        <td class="p-2 text-green-700">Long Trip (10%)</td>
+                                        <td class="p-2">-</td>
+                                        <td class="p-2">-</td>
+                                        <td class="p-2 font-bold text-green-700">-₹${document.getElementById('longDiscountAmount').textContent.replace('-₹', '')}</td>
                                     </tr>
                                     ` : ''}
-                                    <tr class="bg-gradient-to-r from-red-600 to-red-500 text-white font-bold">
-                                        <td class="p-4" colspan="3">TOTAL AMOUNT</td>
-                                        <td class="p-4 text-2xl">₹${document.getElementById('estimatedPrice').textContent}</td>
+                                    <tr class="bg-red-600 text-white font-bold">
+                                        <td class="p-2" colspan="3">TOTAL AMOUNT</td>
+                                        <td class="p-2 text-base">₹${document.getElementById('estimatedPrice').textContent}</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
                     
-                    <div class="grid grid-cols-3 gap-6 mb-8">
-                        <div class="text-center p-4 bg-red-50 rounded-xl border-2 border-red-200">
-                            <div class="text-3xl font-bold text-blue-600">${distanceKm}</div>
-                            <div class="text-sm font-medium text-gray-700 mt-2">Distance (km)</div>
+                    <div class="grid grid-cols-3 gap-3 mb-4">
+                        <div class="text-center p-2 bg-red-50 rounded border">
+                            <div class="text-base font-bold text-blue-600">${distanceKm}</div>
+                            <div class="text-xs text-gray-700">Distance (km)</div>
                         </div>
-                        <div class="text-center p-4 bg-red-50 rounded-xl border-2 border-red-200">
-                            <div class="text-3xl font-bold text-purple-600">${durationHours}</div>
-                            <div class="text-sm font-medium text-gray-700 mt-2">Duration (hrs)</div>
+                        <div class="text-center p-2 bg-red-50 rounded border">
+                            <div class="text-base font-bold text-purple-600">${durationHours}</div>
+                            <div class="text-xs text-gray-700">Duration (hrs)</div>
                         </div>
-                        <div class="text-center p-4 bg-red-50 rounded-xl border-2 border-red-200">
-                            <div class="text-3xl font-bold text-red-600">${document.getElementById('vehicleType').value.toUpperCase()}</div>
-                            <div class="text-sm font-medium text-gray-700 mt-2">Vehicle Type</div>
-                        </div>
-                    </div>
-                    
-                    <div class="border-t-2 border-red-200 pt-6">
-                        <h4 class="font-bold text-xl text-gray-800 mb-4 flex items-center gap-2">
-                            <i class="fas fa-file-contract text-red-500"></i>
-                            Terms & Conditions:
-                        </h4>
-                        <div class="bg-red-50 p-5 rounded-xl border-2 border-red-200">
-                            <ul class="text-gray-700 space-y-2">
-                                <li class="flex items-start gap-2"><i class="fas fa-circle text-red-500 text-xs mt-1"></i> This is an estimated fare, final fare may vary based on exact route</li>
-                                <li class="flex items-start gap-2"><i class="fas fa-circle text-red-500 text-xs mt-1"></i> Driver charges extra for tolls and parking</li>
-                                <li class="flex items-start gap-2"><i class="fas fa-circle text-red-500 text-xs mt-1"></i> Cancellation charges apply as per policy</li>
-                                <li class="flex items-start gap-2"><i class="fas fa-circle text-red-500 text-xs mt-1"></i> Minimum billing: 50km or 8 hours</li>
-                                <li class="flex items-start gap-2"><i class="fas fa-circle text-red-500 text-xs mt-1"></i> Payment: Cash/UPI after trip completion</li>
-                            </ul>
+                        <div class="text-center p-2 bg-red-50 rounded border">
+                            <div class="text-base font-bold text-red-600">${document.getElementById('vehicleType').value.toUpperCase()}</div>
+                            <div class="text-xs text-gray-700">Vehicle Type</div>
                         </div>
                     </div>
                     
-                    <div class="mt-12 flex justify-between">
-                        <div class="text-center">
-                            <p class="font-bold text-gray-800 mb-12">Customer Signature</p>
-                            <div class="border-t-2 border-gray-400 w-64 mx-auto"></div>
-                        </div>
-                        <div class="text-center">
-                            <p class="font-bold text-gray-800 mb-12">For Subhi Tour & Travels</p>
-                            <div class="border-t-2 border-gray-400 w-64 mx-auto"></div>
-                            <p class="mt-4 text-gray-600">Authorized Signatory</p>
+                    <div class="border-t pt-3">
+                        <h4 class="font-bold text-gray-800 mb-2 text-sm">Terms & Conditions:</h4>
+                        <div class="text-xs text-gray-700 space-y-1">
+                            <p>• This is an estimated fare, final fare may vary based on exact route</p>
+                            <p>• Driver charges extra for tolls and parking</p>
+                            <p>• Cancellation charges apply as per policy</p>
+                            <p>• Minimum billing: 50km or 8 hours</p>
+                            <p>• Payment: Cash/UPI after trip completion</p>
                         </div>
                     </div>
                 </div>
@@ -1568,13 +1463,13 @@
             // Show loading
             const button = event.currentTarget;
             const originalText = button.innerHTML;
-            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
             button.disabled = true;
             
             html2canvas(document.getElementById('invoiceContent')).then(canvas => {
                 const imgData = canvas.toDataURL('image/png');
-                const imgWidth = 190;
-                const pageHeight = 280;
+                const imgWidth = 180;
+                const pageHeight = 270;
                 const imgHeight = canvas.height * imgWidth / canvas.width;
                 
                 doc.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
@@ -1592,7 +1487,7 @@
             const originalContent = document.body.innerHTML;
             
             document.body.innerHTML = `
-                <div style="padding: 40px; max-width: 800px; margin: 0 auto;">
+                <div style="padding: 20px; max-width: 800px; margin: 0 auto;">
                     ${printContent}
                 </div>
                 <script>
@@ -1629,38 +1524,38 @@
             const dropCoords = dropLatLng ? 
                 `${dropLatLng.lat.toFixed(4)}, ${dropLatLng.lng.toFixed(4)}` : 'Not specified';
 
-            // Format WhatsApp message
-            const message = `*🚗 New Booking Request - Subhi Tour & Travels*%0A%0A` +
-                           `*👤 Customer Details*%0A` +
-                           `• *Name:* ${name}%0A` +
-                           `• *Phone:* +91 ${number}%0A` +
-                           `• *Passengers:* ${people}%0A` +
-                           `• *Bags:* ${bags}%0A%0A` +
+            // Format WhatsApp message without emojis
+            const message = `*New Booking Request - Subhi Tour & Travels*%0A%0A` +
+                           `*Customer Details*%0A` +
+                           `- Name: ${name}%0A` +
+                           `- Phone: +91 ${number}%0A` +
+                           `- Passengers: ${people}%0A` +
+                           `- Bags: ${bags}%0A%0A` +
                            
-                           `*📍 Journey Details*%0A` +
-                           `• *Pickup:* ${pickupLocation}%0A` +
-                           `• *Pickup Coords:* ${pickupCoords}%0A` +
-                           `• *Pickup Time:* ${new Date(pickup).toLocaleString()}%0A` +
-                           `• *Drop:* ${dropLocation}%0A` +
-                           `• *Drop Coords:* ${dropCoords}%0A` +
-                           `• *Drop Time:* ${new Date(drop).toLocaleString()}%0A%0A` +
+                           `*Journey Details*%0A` +
+                           `- Pickup: ${pickupLocation}%0A` +
+                           `- Pickup Coords: ${pickupCoords}%0A` +
+                           `- Pickup Time: ${new Date(pickup).toLocaleString()}%0A` +
+                           `- Drop: ${dropLocation}%0A` +
+                           `- Drop Coords: ${dropCoords}%0A` +
+                           `- Drop Time: ${new Date(drop).toLocaleString()}%0A%0A` +
                            
-                           `*📊 Trip Information*%0A` +
-                           `• *Distance:* ${distanceKm} km%0A` +
-                           `• *Duration:* ${durationHours} hours (${durationMinutes} minutes)%0A` +
-                           `• *Vehicle:* ${vehicleType.toUpperCase()}%0A` +
-                           `• *Rate:* ₹${vehicleRate}/km%0A%0A` +
+                           `*Trip Information*%0A` +
+                           `- Distance: ${distanceKm} km%0A` +
+                           `- Duration: ${durationHours} hours (${durationMinutes} minutes)%0A` +
+                           `- Vehicle: ${vehicleType.toUpperCase()}%0A` +
+                           `- Rate: Rs.${vehicleRate}/km%0A%0A` +
                            
-                           `*💰 Pricing Factors*%0A` +
-                           `${isUrgent ? '• ⚡ Urgent Booking (20% surcharge)%0A' : ''}` +
-                           `${isPriorBooking ? '• 📅 Prior Booking (15% discount)%0A' : ''}` +
-                           `${isLongBooking ? '• ⏰ Long Duration (10% discount)%0A' : ''}` +
-                           `• *Estimated Fare:* ₹${document.getElementById('estimatedPrice').textContent}%0A%0A` +
+                           `*Pricing Factors*%0A` +
+                           `${isUrgent ? '- Urgent Booking (20% surcharge)%0A' : ''}` +
+                           `${isPriorBooking ? '- Prior Booking (15% discount)%0A' : ''}` +
+                           `${isLongBooking ? '- Long Duration (10% discount)%0A' : ''}` +
+                           `- Estimated Fare: Rs.${document.getElementById('estimatedPrice').textContent}%0A%0A` +
                            
-                           `*📝 Special Requirements*%0A${special || 'None'}`;
+                           `*Special Requirements*%0A${special || 'None'}`;
 
             // Open WhatsApp
-            const whatsappUrl = `https://wa.me/916264950669?text=${message}`;
+            const whatsappUrl = `https://wa.me/916264950669?text=${encodeURIComponent(message)}`;
             window.open(whatsappUrl, '_blank');
         });
     </script>
