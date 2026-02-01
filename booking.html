@@ -1502,7 +1502,7 @@
             `;
         }
 
-        // Form submission
+        // Form submission - FIXED WHATSAPP MESSAGE FORMAT
         document.getElementById('bookingForm').addEventListener('submit', function(e) {
             e.preventDefault();
 
@@ -1524,38 +1524,56 @@
             const dropCoords = dropLatLng ? 
                 `${dropLatLng.lat.toFixed(4)}, ${dropLatLng.lng.toFixed(4)}` : 'Not specified';
 
-            // Format WhatsApp message without emojis
-            const message = `*New Booking Request - Subhi Tour & Travels*%0A%0A` +
-                           `*Customer Details*%0A` +
-                           `- Name: ${name}%0A` +
-                           `- Phone: +91 ${number}%0A` +
-                           `- Passengers: ${people}%0A` +
-                           `- Bags: ${bags}%0A%0A` +
-                           
-                           `*Journey Details*%0A` +
-                           `- Pickup: ${pickupLocation}%0A` +
-                           `- Pickup Coords: ${pickupCoords}%0A` +
-                           `- Pickup Time: ${new Date(pickup).toLocaleString()}%0A` +
-                           `- Drop: ${dropLocation}%0A` +
-                           `- Drop Coords: ${dropCoords}%0A` +
-                           `- Drop Time: ${new Date(drop).toLocaleString()}%0A%0A` +
-                           
-                           `*Trip Information*%0A` +
-                           `- Distance: ${distanceKm} km%0A` +
-                           `- Duration: ${durationHours} hours (${durationMinutes} minutes)%0A` +
-                           `- Vehicle: ${vehicleType.toUpperCase()}%0A` +
-                           `- Rate: Rs.${vehicleRate}/km%0A%0A` +
-                           
-                           `*Pricing Factors*%0A` +
-                           `${isUrgent ? '- Urgent Booking (20% surcharge)%0A' : ''}` +
-                           `${isPriorBooking ? '- Prior Booking (15% discount)%0A' : ''}` +
-                           `${isLongBooking ? '- Long Duration (10% discount)%0A' : ''}` +
-                           `- Estimated Fare: Rs.${document.getElementById('estimatedPrice').textContent}%0A%0A` +
-                           
-                           `*Special Requirements*%0A${special || 'None'}`;
+            // Format date for display
+            const formatDateForMessage = (dateString) => {
+                if (!dateString) return 'Not specified';
+                const date = new Date(dateString);
+                return date.toLocaleString('en-IN', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true
+                });
+            };
 
+            // Build WhatsApp message
+            let message = "New Booking Request - Subhi Tour & Travels\n\n";
+            message += "Customer Details\n";
+            message += "- Name: " + name + "\n";
+            message += "- Phone: +91 " + number + "\n";
+            message += "- Passengers: " + people + "\n";
+            message += "- Bags: " + bags + "\n\n";
+            
+            message += "Journey Details\n";
+            message += "- Pickup: " + pickupLocation + "\n";
+            message += "- Pickup Coords: " + pickupCoords + "\n";
+            message += "- Pickup Time: " + formatDateForMessage(pickup) + "\n";
+            message += "- Drop: " + dropLocation + "\n";
+            message += "- Drop Coords: " + dropCoords + "\n";
+            message += "- Drop Time: " + formatDateForMessage(drop) + "\n\n";
+            
+            message += "Trip Information\n";
+            message += "- Distance: " + distanceKm + " km\n";
+            message += "- Duration: " + durationHours + " hours (" + durationMinutes + " minutes)\n";
+            message += "- Vehicle: " + vehicleType.toUpperCase() + "\n";
+            message += "- Rate: Rs." + vehicleRate + "/km\n\n";
+            
+            message += "Pricing Factors\n";
+            if (isUrgent) message += "- Urgent Booking (20% surcharge)\n";
+            if (isPriorBooking) message += "- Prior Booking (15% discount)\n";
+            if (isLongBooking) message += "- Long Duration (10% discount)\n";
+            message += "- Estimated Fare: Rs." + document.getElementById('estimatedPrice').textContent + "\n\n";
+            
+            message += "Special Requirements\n";
+            message += special || 'None';
+
+            // Properly encode the message for WhatsApp
+            const encodedMessage = encodeURIComponent(message);
+            
             // Open WhatsApp
-            const whatsappUrl = `https://wa.me/916264950669?text=${encodeURIComponent(message)}`;
+            const whatsappUrl = `https://wa.me/916264950669?text=${encodedMessage}`;
             window.open(whatsappUrl, '_blank');
         });
     </script>
