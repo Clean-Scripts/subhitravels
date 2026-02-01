@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subhi Tour & Travels | Luxury Car Rentals Indore</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .hero-bg {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?q=80&w=1470&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+</head>
+<body class="font-sans text-gray-800 antialiased">
+
+    <nav class="bg-white shadow-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center h-20">
+                <a href="index.html" class="flex items-center space-x-2">
+                    <img src="https://via.placeholder.com/150x50?text=LOGO" alt="Subhi Logo" class="h-12 w-auto"> 
+                    <span class="font-bold text-xl text-red-600 hidden md:block">Subhi Tour & Travels</span>
+                </a>
+
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="index.html" class="text-gray-700 hover:text-red-600 font-medium">Home</a>
+                    <a href="about.html" class="text-gray-700 hover:text-red-600 font-medium">About Us</a>
+                    <div class="relative group">
+                        <button class="text-gray-700 hover:text-red-600 font-medium flex items-center">
+                            Partner With Us <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                        </button>
+                        <div class="absolute hidden group-hover:block bg-white shadow-xl rounded-md w-48 py-2 mt-0 border-t-2 border-red-600">
+                            <a href="register-vehicle.html" class="block px-4 py-2 hover:bg-gray-100">Register Vehicle</a>
+                            <a href="driver-registration.html" class="block px-4 py-2 hover:bg-gray-100">Add as Driver</a>
+                        </div>
+                    </div>
+                    <a href="booking.html" class="bg-red-600 text-white px-5 py-2 rounded-full hover:bg-red-700 transition shadow-md transform hover:-translate-y-0.5">
+                        Book Now
+                    </a>
+                </div>
+
+                <button class="md:hidden text-gray-700 focus:outline-none" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t">
+            <a href="index.html" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Home</a>
+            <a href="about.html" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">About Us</a>
+            <a href="register-vehicle.html" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Register Vehicle</a>
+            <a href="driver-registration.html" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Add as Driver</a>
+            <a href="booking.html" class="block px-4 py-2 text-red-600 font-bold hover:bg-gray-100">Book A Cab</a>
+        </div>
+    </nav>
+
+    <header class="hero-bg h-screen flex items-center justify-center text-center px-4">
+        <div class="max-w-4xl text-white pt-20">
+            <h1 class="text-4xl md:text-6xl font-bold mb-6">Explore India in Luxury</h1>
+            <p class="text-xl md:text-2xl mb-8 font-light text-gray-200">A/C & Non A/C Luxury Cars Available All Over India.</p>
+            <div class="flex flex-col md:flex-row gap-4 justify-center">
+                <a href="booking.html" class="bg-red-600 hover:bg-red-700 text-white text-lg px-8 py-3 rounded-full transition shadow-lg flex items-center justify-center gap-2">
+                    <i class="fab fa-whatsapp"></i> Book via WhatsApp
+                </a>
+                <a href="tel:+918462891302" class="bg-white hover:bg-gray-100 text-gray-900 text-lg px-8 py-3 rounded-full transition shadow-lg flex items-center justify-center gap-2">
+                    <i class="fas fa-phone-alt"></i> Call Now
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <section class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Why Choose <span class="text-red-600">Subhi Travels?</span></h2>
+                <div class="w-24 h-1 bg-red-600 mx-auto"></div>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl transition duration-300 text-center border-b-4 border-transparent hover:border-red-600">
+                    <div class="bg-red-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-car text-2xl text-red-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Premium Fleet</h3>
+                    <p class="text-gray-600">From Innova and Ertiga to Swift Dzire. Clean, well-maintained, and comfortable.</p>
+                </div>
+                <div class="bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl transition duration-300 text-center border-b-4 border-transparent hover:border-red-600">
+                    <div class="bg-red-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-map-marked-alt text-2xl text-red-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">All India Service</h3>
+                    <p class="text-gray-600">Based in Indore, we serve clients traveling to any destination across India.</p>
+                </div>
+                <div class="bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl transition duration-300 text-center border-b-4 border-transparent hover:border-red-600">
+                    <div class="bg-red-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-user-shield text-2xl text-red-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Safe & Reliable</h3>
+                    <p class="text-gray-600">Experienced drivers and transparent pricing. Your safety is our priority.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-gray-900 text-white pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid md:grid-cols-3 gap-12 mb-12">
+                <div>
+                    <h3 class="text-2xl font-bold text-red-600 mb-4">Subhi Tour & Travels</h3>
+                    <p class="text-gray-400 mb-4">Your trusted partner for comfortable and reliable journeys across India.</p>
+                    <p class="text-gray-400"><i class="fas fa-map-marker-alt text-red-600 mr-2"></i> 05, Radhika Kunj Indore (M.P.)</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-4 text-white">Quick Links</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="about.html" class="hover:text-yellow-400 transition">About Us</a></li>
+                        <li><a href="booking.html" class="hover:text-yellow-400 transition">Book a Ride</a></li>
+                        <li><a href="terms.html" class="hover:text-yellow-400 transition">Terms & Conditions</a></li>
+                        <li><a href="privacy.html" class="hover:text-yellow-400 transition">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-4 text-white">Contact Us</h4>
+                    <div class="space-y-3">
+                        <p class="flex items-center gap-3">
+                            <i class="fas fa-phone text-yellow-400"></i>
+                            <span>Kartik Dhakse: <a href="tel:+918462891302" class="hover:text-white text-gray-300">84628 91302</a></span>
+                        </p>
+                        <p class="flex items-center gap-3">
+                            <i class="fas fa-phone text-yellow-400"></i>
+                            <span>Sourabh Dhakse: <a href="tel:+916264950669" class="hover:text-white text-gray-300">62649 50669</a></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-8 text-center text-gray-500 text-sm">
+                &copy; 2024 Subhi Tour & Travels. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
