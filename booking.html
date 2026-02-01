@@ -8,11 +8,12 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <!-- Leaflet CSS for maps -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Leaflet Control Geocoder for autocomplete -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
     <!-- jsPDF for invoice generation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link rel="icon" href="https://github.com/Clean-Scripts/subhitravels/blob/main/subhi-logo.webp?raw=true">
-    
     <style>
         .leaflet-container { 
             width: 100%; 
@@ -103,31 +104,64 @@
             font-weight: 600;
             font-size: 1rem;
         }
-        .duration-display {
-            background: #f0f9ff;
-            border: 1px solid #bae6fd;
-            border-radius: 0.5rem;
-            padding: 0.75rem;
-            margin-top: 0.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+        .autocomplete-suggestions {
+            position: absolute;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.375rem;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            width: 100%;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: none;
         }
-        .duration-label {
-            font-size: 0.875rem;
-            color: #0369a1;
+        .suggestion-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #f3f4f6;
         }
-        .duration-value {
-            font-weight: 600;
-            color: #075985;
+        .suggestion-item:hover {
+            background-color: #f8fafc;
         }
-        .auto-time-note {
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+        .suggestion-name {
+            font-weight: 500;
+            color: #111827;
+        }
+        .suggestion-address {
             font-size: 0.75rem;
             color: #6b7280;
-            margin-top: 0.25rem;
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
+        }
+        .location-search {
+            position: relative;
+        }
+        .reverse-btn {
+            position: absolute;
+            right: 60px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 6px;
+            border-radius: 4px;
+            cursor: pointer;
+            z-index: 10;
+        }
+        .reverse-btn:hover {
+            background: #4338ca;
+        }
+        .travel-time-info {
+            background: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin-top: 8px;
+            font-size: 0.875rem;
+            display: none;
         }
     </style>
 </head>
@@ -212,56 +246,57 @@
                         
                         <div class="grid md:grid-cols-2 gap-6">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Pickup Location *</label>
-                                <div class="flex gap-2 mb-2">
-                                    <input type="text" id="pickupLocation" required 
-                                           class="flex-1 px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 outline-none"
-                                           placeholder="Enter pickup address">
-                                    <button type="button" onclick="useCurrentLocation('pickup')" 
-                                            class="px-4 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition flex items-center gap-2">
-                                        <i class="fas fa-location-arrow"></i>
-                                    </button>
+                                <div class="location-search">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Pickup Location *</label>
+                                    <div class="flex gap-2 mb-2">
+                                        <div class="relative flex-1">
+                                            <input type="text" id="pickupLocation" required 
+                                                   class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 outline-none"
+                                                   placeholder="Start typing pickup address..."
+                                                   autocomplete="off">
+                                            <div id="pickupSuggestions" class="autocomplete-suggestions"></div>
+                                        </div>
+                                        <button type="button" onclick="useCurrentLocation('pickup')" 
+                                                class="px-4 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition flex items-center gap-2"
+                                                title="Use current location">
+                                            <i class="fas fa-location-arrow"></i>
+                                        </button>
+                                    </div>
                                 </div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Pickup Date & Time *</label>
                                 <input type="datetime-local" id="pickup" required 
-                                       class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 outline-none">
-                                <div id="pickupNote" class="auto-time-note hidden">
-                                    <i class="fas fa-info-circle text-blue-500"></i>
-                                    <span>Drop time will be auto-calculated based on route duration</span>
-                                </div>
+                                       class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 outline-none"
+                                       onchange="updateDropTime()">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Drop Location *</label>
-                                <div class="flex gap-2 mb-2">
-                                    <input type="text" id="dropLocation" required 
-                                           class="flex-1 px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 outline-none"
-                                           placeholder="Enter drop address">
-                                    <button type="button" onclick="useCurrentLocation('drop')" 
-                                            class="px-4 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition flex items-center gap-2">
-                                        <i class="fas fa-location-arrow"></i>
-                                    </button>
-                                </div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Drop Date & Time *</label>
-                                <div class="relative">
-                                    <input type="datetime-local" id="drop" required 
-                                           class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 outline-none pr-24">
-                                    <div id="durationBadge" class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded hidden">
-                                        <i class="fas fa-clock mr-1"></i><span id="durationText">0h 0m</span>
+                                <div class="location-search">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Drop Location *</label>
+                                    <div class="flex gap-2 mb-2">
+                                        <div class="relative flex-1">
+                                            <input type="text" id="dropLocation" required 
+                                                   class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 outline-none"
+                                                   placeholder="Start typing drop address..."
+                                                   autocomplete="off">
+                                            <div id="dropSuggestions" class="autocomplete-suggestions"></div>
+                                        </div>
+                                        <button type="button" onclick="useCurrentLocation('drop')" 
+                                                class="px-4 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition flex items-center gap-2"
+                                                title="Use current location">
+                                            <i class="fas fa-location-arrow"></i>
+                                        </button>
+                                        <button type="button" onclick="reverseLocations()" 
+                                                class="reverse-btn"
+                                                title="Swap pickup and drop locations">
+                                            <i class="fas fa-exchange-alt"></i>
+                                        </button>
                                     </div>
                                 </div>
-                                <div id="autoTimeNote" class="auto-time-note hidden">
-                                    <i class="fas fa-robot text-green-500"></i>
-                                    <span>Auto-calculated based on route duration</span>
-                                    <button type="button" onclick="manualEditDropTime()" class="ml-2 text-blue-600 hover:text-blue-800 text-xs">
-                                        <i class="fas fa-edit"></i> Edit manually
-                                    </button>
-                                </div>
-                                <div id="manualTimeNote" class="auto-time-note hidden">
-                                    <i class="fas fa-user-edit text-purple-500"></i>
-                                    <span>Manually set by user</span>
-                                    <button type="button" onclick="autoCalculateDropTime()" class="ml-2 text-blue-600 hover:text-blue-800 text-xs">
-                                        <i class="fas fa-calculator"></i> Auto-calculate
-                                    </button>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Drop Date & Time (Approx) *</label>
+                                <input type="datetime-local" id="drop" required 
+                                       class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 outline-none">
+                                <div id="travelTimeInfo" class="travel-time-info">
+                                    <i class="fas fa-clock mr-2"></i>
+                                    <span id="travelTimeText">Estimated travel time will be calculated</span>
                                 </div>
                             </div>
                         </div>
@@ -283,11 +318,11 @@
                             </div>
                             <div class="map-container">
                                 <div class="map-controls">
-                                    <button type="button" onclick="searchLocation()" class="map-btn">
-                                        <i class="fas fa-search"></i> Search
-                                    </button>
                                     <button type="button" onclick="useCurrentLocation('map')" class="map-btn">
                                         <i class="fas fa-location-arrow"></i> Current
+                                    </button>
+                                    <button type="button" onclick="clearMap()" class="map-btn">
+                                        <i class="fas fa-trash"></i> Clear
                                     </button>
                                 </div>
                                 <div id="map"></div>
@@ -300,18 +335,6 @@
                                 <div class="bg-red-50 p-3 rounded-lg">
                                     <div class="font-medium text-red-800">Drop Point</div>
                                     <div id="dropCoords" class="text-red-600">Not set</div>
-                                </div>
-                            </div>
-                            
-                            <!-- Duration Display -->
-                            <div id="durationDisplay" class="duration-display hidden">
-                                <div>
-                                    <div class="duration-label">Estimated Journey Duration</div>
-                                    <div class="duration-value" id="journeyDuration">0 hours 0 minutes</div>
-                                </div>
-                                <div class="text-right">
-                                    <div class="duration-label">Distance</div>
-                                    <div class="duration-value" id="journeyDistance">0 km</div>
                                 </div>
                             </div>
                         </div>
@@ -481,6 +504,8 @@
 
     <!-- Leaflet JS for maps -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Leaflet Control Geocoder for autocomplete -->
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
     <!-- For distance calculation -->
     <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
 
@@ -497,7 +522,8 @@
         let isUrgent = false;
         let isPriorBooking = false;
         let isLongBooking = false;
-        let isDropTimeAuto = true; // Track if drop time is auto-calculated
+        let debounceTimer;
+        let geocoder = L.Control.Geocoder.nominatim();
 
         // Phone number formatting
         function formatPhoneNumber(input) {
@@ -505,7 +531,7 @@
             if (value.length > 5) {
                 value = value.replace(/(\d{5})(\d{0,5})/, '$1 $2');
             }
-            input.value = value.substring(0, 11); // 10 digits + space
+            input.value = value.substring(0, 11);
         }
 
         // Initialize map when DOM is loaded
@@ -537,135 +563,187 @@
             // Set default vehicle
             document.querySelector('.vehicle-option[data-type="dzire"]').click();
 
-            // Map click event
+            // Map click event - sync with form fields
             map.on('click', function(e) {
                 if (!pickupLatLng) {
-                    setPickupPoint(e.latlng);
+                    setLocationFromMap(e.latlng, 'pickup');
                 } else if (!dropLatLng) {
-                    setDropPoint(e.latlng);
+                    setLocationFromMap(e.latlng, 'drop');
                     calculateRoute();
                 } else {
-                    resetMapPoints();
-                    setPickupPoint(e.latlng);
+                    // Reset and start new pickup
+                    clearMap();
+                    setLocationFromMap(e.latlng, 'pickup');
                 }
             });
 
-            // Pickup time change event
-            document.getElementById('pickup').addEventListener('change', function() {
-                document.getElementById('pickupNote').classList.remove('hidden');
-                
-                // If we have duration and drop time is auto, update it
-                if (durationHours > 0 && isDropTimeAuto) {
-                    updateDropTimeFromPickup();
+            // Autocomplete setup for pickup location
+            const pickupInput = document.getElementById('pickupLocation');
+            const pickupSuggestions = document.getElementById('pickupSuggestions');
+            
+            pickupInput.addEventListener('input', function() {
+                clearTimeout(debounceTimer);
+                const query = this.value.trim();
+                if (query.length < 3) {
+                    pickupSuggestions.style.display = 'none';
+                    return;
                 }
                 
-                calculateCharges();
+                debounceTimer = setTimeout(() => {
+                    geocodeLocation(query, 'pickup');
+                }, 300);
             });
 
-            // Drop time change event
-            document.getElementById('drop').addEventListener('change', function() {
-                // When user manually changes drop time, switch to manual mode
-                if (durationHours > 0) {
-                    manualEditDropTime();
+            // Autocomplete setup for drop location
+            const dropInput = document.getElementById('dropLocation');
+            const dropSuggestions = document.getElementById('dropSuggestions');
+            
+            dropInput.addEventListener('input', function() {
+                clearTimeout(debounceTimer);
+                const query = this.value.trim();
+                if (query.length < 3) {
+                    dropSuggestions.style.display = 'none';
+                    return;
                 }
                 
-                // Validate that drop time is after pickup time
-                validateTimeSequence();
+                debounceTimer = setTimeout(() => {
+                    geocodeLocation(query, 'drop');
+                }, 300);
+            });
+
+            // Date time change events
+            document.getElementById('pickup').addEventListener('change', calculateCharges);
+            document.getElementById('drop').addEventListener('change', calculateCharges);
+
+            // Hide suggestions when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!pickupSuggestions.contains(e.target) && e.target !== pickupInput) {
+                    pickupSuggestions.style.display = 'none';
+                }
+                if (!dropSuggestions.contains(e.target) && e.target !== dropInput) {
+                    dropSuggestions.style.display = 'none';
+                }
             });
         });
 
-        // Update drop time based on pickup time and duration
-        function updateDropTimeFromPickup() {
-            const pickupInput = document.getElementById('pickup');
-            const dropInput = document.getElementById('drop');
-            
-            if (!pickupInput.value || durationHours <= 0) return;
-            
-            const pickupTime = new Date(pickupInput.value);
-            const dropTime = new Date(pickupTime.getTime() + (durationHours * 60 * 60 * 1000));
-            
-            // Format to datetime-local string
-            const dropString = formatDateTimeLocal(dropTime);
-            dropInput.value = dropString;
-            
-            // Update duration badge
-            updateDurationBadge();
-            
-            // Show auto note
-            document.getElementById('autoTimeNote').classList.remove('hidden');
-            document.getElementById('manualTimeNote').classList.add('hidden');
-            isDropTimeAuto = true;
+        // Geocode location for autocomplete
+        async function geocodeLocation(query, type) {
+            try {
+                const results = await geocoder.geocode(query);
+                const suggestions = document.getElementById(type + 'Suggestions');
+                suggestions.innerHTML = '';
+                
+                if (results.length === 0) {
+                    suggestions.innerHTML = '<div class="suggestion-item">No results found</div>';
+                    suggestions.style.display = 'block';
+                    return;
+                }
+                
+                results.slice(0, 5).forEach(result => {
+                    const div = document.createElement('div');
+                    div.className = 'suggestion-item';
+                    div.innerHTML = `
+                        <div class="suggestion-name">${result.name || 'Location'}</div>
+                        <div class="suggestion-address">${result.properties.display_name || result.name || ''}</div>
+                    `;
+                    div.addEventListener('click', () => {
+                        selectSuggestion(result, type);
+                    });
+                    suggestions.appendChild(div);
+                });
+                
+                suggestions.style.display = 'block';
+            } catch (error) {
+                console.error('Geocoding error:', error);
+            }
         }
 
-        // Format date for datetime-local input
-        function formatDateTimeLocal(date) {
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            const hours = String(date.getHours()).padStart(2, '0');
-            const minutes = String(date.getMinutes()).padStart(2, '0');
+        // Select suggestion from autocomplete
+        function selectSuggestion(result, type) {
+            const latLng = L.latLng(result.geometry.coordinates[1], result.geometry.coordinates[0]);
+            const displayName = result.properties.display_name || result.name;
             
-            return `${year}-${month}-${day}T${hours}:${minutes}`;
+            // Update input field
+            document.getElementById(type + 'Location').value = displayName;
+            
+            // Hide suggestions
+            document.getElementById(type + 'Suggestions').style.display = 'none';
+            
+            // Update map
+            setLocationFromMap(latLng, type);
+            
+            // If both locations set, calculate route
+            if (pickupLatLng && dropLatLng) {
+                calculateRoute();
+            }
+            
+            // Center map on selected location
+            map.setView(latLng, 13);
         }
 
-        // Format duration for display
-        function formatDuration(hours) {
-            const totalMinutes = Math.round(hours * 60);
-            const hrs = Math.floor(totalMinutes / 60);
-            const mins = totalMinutes % 60;
-            
-            if (hrs === 0) {
-                return `${mins} minutes`;
-            } else if (mins === 0) {
-                return `${hrs} hour${hrs > 1 ? 's' : ''}`;
+        // Set location from map click
+        function setLocationFromMap(latLng, type) {
+            // Update coordinates
+            if (type === 'pickup') {
+                pickupLatLng = latLng;
+                updateMarker('pickup', latLng);
+                document.getElementById('pickupCoords').innerHTML = 
+                    `${latLng.lat.toFixed(4)}, ${latLng.lng.toFixed(4)}<br><small>${new Date().toLocaleTimeString()}</small>`;
+                
+                // Reverse geocode to get address
+                reverseGeocode(latLng, 'pickup');
             } else {
-                return `${hrs} hour${hrs > 1 ? 's' : ''} ${mins} minutes`;
+                dropLatLng = latLng;
+                updateMarker('drop', latLng);
+                document.getElementById('dropCoords').innerHTML = 
+                    `${latLng.lat.toFixed(4)}, ${latLng.lng.toFixed(4)}<br><small>${new Date().toLocaleTimeString()}</small>`;
+                
+                // Show calculation section
+                document.getElementById('calculationSection').classList.remove('hidden');
+                document.getElementById('pricingFactors').classList.remove('hidden');
+                
+                // Reverse geocode to get address
+                reverseGeocode(latLng, 'drop');
+            }
+            
+            // If both set, calculate route
+            if (pickupLatLng && dropLatLng) {
+                calculateRoute();
             }
         }
 
-        // Update duration badge
-        function updateDurationBadge() {
-            if (durationHours > 0) {
-                const totalMinutes = Math.round(durationHours * 60);
-                const hrs = Math.floor(totalMinutes / 60);
-                const mins = totalMinutes % 60;
+        // Reverse geocode to get address from coordinates
+        async function reverseGeocode(latLng, type) {
+            try {
+                const result = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latLng.lat}&lon=${latLng.lng}&zoom=18&addressdetails=1`)
+                    .then(response => response.json());
                 
-                document.getElementById('durationText').textContent = `${hrs}h ${mins}m`;
-                document.getElementById('durationBadge').classList.remove('hidden');
-                
-                // Update journey duration display
-                document.getElementById('journeyDuration').textContent = formatDuration(durationHours);
-                document.getElementById('journeyDistance').textContent = `${distanceKm} km`;
-                document.getElementById('durationDisplay').classList.remove('hidden');
+                if (result.display_name) {
+                    document.getElementById(type + 'Location').value = result.display_name;
+                }
+            } catch (error) {
+                console.error('Reverse geocoding error:', error);
             }
         }
 
-        // Switch to manual drop time editing
-        function manualEditDropTime() {
-            document.getElementById('autoTimeNote').classList.add('hidden');
-            document.getElementById('manualTimeNote').classList.remove('hidden');
-            isDropTimeAuto = false;
-        }
+        // Update marker on map
+        function updateMarker(type, latLng) {
+            const color = type === 'pickup' ? '#10b981' : '#ef4444';
+            const markerIcon = L.divIcon({
+                className: 'custom-div-icon',
+                html: `<div style="background-color: ${color}; width: 24px; height: 24px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 5px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">${type === 'pickup' ? 'P' : 'D'}</div>`
+            });
 
-        // Switch back to auto calculation
-        function autoCalculateDropTime() {
-            updateDropTimeFromPickup();
-        }
-
-        // Validate that drop time is after pickup time
-        function validateTimeSequence() {
-            const pickupInput = document.getElementById('pickup');
-            const dropInput = document.getElementById('drop');
-            
-            if (!pickupInput.value || !dropInput.value) return;
-            
-            const pickupTime = new Date(pickupInput.value);
-            const dropTime = new Date(dropInput.value);
-            
-            if (dropTime <= pickupTime) {
-                alert('Drop time must be after pickup time!');
-                dropInput.value = '';
-                updateDropTimeFromPickup();
+            if (type === 'pickup') {
+                if (pickupMarker) map.removeLayer(pickupMarker);
+                pickupMarker = L.marker(latLng, { icon: markerIcon })
+                    .addTo(map)
+                    .bindPopup(`<strong>${type === 'pickup' ? 'Pickup' : 'Drop'} Point</strong>`);
+            } else {
+                if (dropMarker) map.removeLayer(dropMarker);
+                dropMarker = L.marker(latLng, { icon: markerIcon })
+                    .addTo(map)
+                    .bindPopup(`<strong>${type === 'pickup' ? 'Pickup' : 'Drop'} Point</strong>`);
             }
         }
 
@@ -681,20 +759,10 @@
                     const latLng = L.latLng(position.coords.latitude, position.coords.longitude);
                     
                     if (type === 'pickup' || type === 'map') {
-                        setPickupPoint(latLng);
-                        if (type === 'pickup') {
-                            document.getElementById('pickupLocation').value = "Current Location";
-                        }
+                        setLocationFromMap(latLng, 'pickup');
                     }
                     if (type === 'drop' || type === 'map') {
-                        setDropPoint(latLng);
-                        if (type === 'drop') {
-                            document.getElementById('dropLocation').value = "Current Location";
-                        }
-                    }
-                    
-                    if (pickupLatLng && dropLatLng) {
-                        calculateRoute();
+                        setLocationFromMap(latLng, 'drop');
                     }
                     
                     map.setView(latLng, 13);
@@ -705,90 +773,65 @@
             );
         }
 
-        // Search location
-        function searchLocation() {
-            const query = prompt("Enter location to search:");
-            if (query) {
-                // Using OpenStreetMap Nominatim for geocoding
-                fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.length > 0) {
-                            const latLng = L.latLng(data[0].lat, data[0].lon);
-                            const type = confirm("Set as Pickup location? (Cancel for Drop location)") ? 'pickup' : 'drop';
-                            
-                            if (type === 'pickup') {
-                                setPickupPoint(latLng);
-                                document.getElementById('pickupLocation').value = data[0].display_name;
-                            } else {
-                                setDropPoint(latLng);
-                                document.getElementById('dropLocation').value = data[0].display_name;
-                            }
-                            
-                            map.setView(latLng, 13);
-                            
-                            if (pickupLatLng && dropLatLng) {
-                                calculateRoute();
-                            }
-                        } else {
-                            alert("Location not found");
-                        }
-                    })
-                    .catch(error => {
-                        alert("Error searching location");
-                    });
+        // Reverse pickup and drop locations
+        function reverseLocations() {
+            if (!pickupLatLng || !dropLatLng) {
+                alert("Please set both pickup and drop locations first");
+                return;
             }
-        }
-
-        function setPickupPoint(latLng) {
-            pickupLatLng = latLng;
-            if (pickupMarker) map.removeLayer(pickupMarker);
-            pickupMarker = L.marker(latLng, {
-                icon: L.divIcon({
-                    className: 'custom-div-icon',
-                    html: `<div style="background-color: #10b981; width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 5px rgba(0,0,0,0.3);"></div>`
-                })
-            }).addTo(map).bindPopup('Pickup Point');
             
+            // Swap coordinates
+            [pickupLatLng, dropLatLng] = [dropLatLng, pickupLatLng];
+            
+            // Update markers
+            updateMarker('pickup', pickupLatLng);
+            updateMarker('drop', dropLatLng);
+            
+            // Update form fields (temporarily store values)
+            const tempPickup = document.getElementById('pickupLocation').value;
+            const tempDrop = document.getElementById('dropLocation').value;
+            
+            document.getElementById('pickupLocation').value = tempDrop;
+            document.getElementById('dropLocation').value = tempPickup;
+            
+            // Update coordinate displays
             document.getElementById('pickupCoords').innerHTML = 
-                `${latLng.lat.toFixed(4)}, ${latLng.lng.toFixed(4)}<br><small>${new Date().toLocaleTimeString()}</small>`;
-        }
-
-        function setDropPoint(latLng) {
-            dropLatLng = latLng;
-            if (dropMarker) map.removeLayer(dropMarker);
-            dropMarker = L.marker(latLng, {
-                icon: L.divIcon({
-                    className: 'custom-div-icon',
-                    html: `<div style="background-color: #ef4444; width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 5px rgba(0,0,0,0.3);"></div>`
-                })
-            }).addTo(map).bindPopup('Drop Point');
-            
+                `${pickupLatLng.lat.toFixed(4)}, ${pickupLatLng.lng.toFixed(4)}`;
             document.getElementById('dropCoords').innerHTML = 
-                `${latLng.lat.toFixed(4)}, ${latLng.lng.toFixed(4)}<br><small>${new Date().toLocaleTimeString()}</small>`;
+                `${dropLatLng.lat.toFixed(4)}, ${dropLatLng.lng.toFixed(4)}`;
             
-            document.getElementById('calculationSection').classList.remove('hidden');
-            document.getElementById('pricingFactors').classList.remove('hidden');
+            // Recalculate route
+            calculateRoute();
         }
 
-        function resetMapPoints() {
-            map.eachLayer(layer => {
-                if (layer instanceof L.Marker || layer instanceof L.Routing.Control) {
-                    map.removeLayer(layer);
-                }
-            });
+        // Clear map
+        function clearMap() {
+            if (pickupMarker) map.removeLayer(pickupMarker);
+            if (dropMarker) map.removeLayer(dropMarker);
+            if (routeControl) map.removeControl(routeControl);
+            
             pickupLatLng = null;
             dropLatLng = null;
+            
+            document.getElementById('pickupLocation').value = '';
+            document.getElementById('dropLocation').value = '';
+            document.getElementById('pickupCoords').innerHTML = 'Not set';
+            document.getElementById('dropCoords').innerHTML = 'Not set';
+            document.getElementById('calculationSection').classList.add('hidden');
+            document.getElementById('pricingFactors').classList.add('hidden');
+            document.getElementById('travelTimeInfo').style.display = 'none';
         }
 
         // Calculate route between points
         function calculateRoute() {
             if (!pickupLatLng || !dropLatLng) return;
             
+            // Clear previous route
             if (routeControl) {
                 map.removeControl(routeControl);
             }
             
+            // Draw route
             routeControl = L.Routing.control({
                 waypoints: [pickupLatLng, dropLatLng],
                 routeWhileDragging: false,
@@ -807,23 +850,51 @@
                 if (routes && routes.length > 0) {
                     const route = routes[0];
                     distanceKm = (route.summary.totalDistance / 1000).toFixed(1);
-                    durationHours = (route.summary.totalTime / 3600).toFixed(2);
+                    durationHours = (route.summary.totalTime / 3600).toFixed(1);
                     durationMinutes = Math.round(route.summary.totalTime / 60);
                     
                     document.getElementById('distanceValue').textContent = distanceKm;
-                    document.getElementById('durationValue').textContent = parseFloat(durationHours).toFixed(1);
+                    document.getElementById('durationValue').textContent = durationHours;
                     
-                    // Update duration display
-                    updateDurationBadge();
+                    // Update travel time info
+                    document.getElementById('travelTimeText').textContent = 
+                        `Estimated travel time: ${durationMinutes} minutes (${durationHours} hours)`;
+                    document.getElementById('travelTimeInfo').style.display = 'block';
                     
-                    // Update drop time if auto mode
-                    if (isDropTimeAuto) {
-                        updateDropTimeFromPickup();
-                    }
-                    
+                    // Update drop time if pickup time is set
+                    updateDropTime();
                     calculateCharges();
                 }
             });
+        }
+
+        // Update drop time based on pickup time and travel duration
+        function updateDropTime() {
+            const pickupInput = document.getElementById('pickup');
+            const dropInput = document.getElementById('drop');
+            
+            if (!pickupInput.value || !durationMinutes) return;
+            
+            const pickupDate = new Date(pickupInput.value);
+            
+            // Add travel time plus 30 minutes buffer for loading/unloading
+            const totalMinutes = durationMinutes + 30;
+            const dropDate = new Date(pickupDate.getTime() + totalMinutes * 60000);
+            
+            // Format date for datetime-local input
+            const formatDateTime = (date) => {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                const hours = String(date.getHours()).padStart(2, '0');
+                const minutes = String(date.getMinutes()).padStart(2, '0');
+                return `${year}-${month}-${day}T${hours}:${minutes}`;
+            };
+            
+            dropInput.value = formatDateTime(dropDate);
+            
+            // Update pricing
+            calculateCharges();
         }
 
         // Calculate charges with dynamic pricing
@@ -840,9 +911,9 @@
             const tripDuration = (dropTime - pickupTime) / (1000 * 60 * 60);
             
             // Determine pricing factors
-            isUrgent = hoursUntilPickup < 24; // Less than 24 hours
-            isPriorBooking = hoursUntilPickup > 168; // More than 7 days
-            isLongBooking = tripDuration > 8; // More than 8 hours
+            isUrgent = hoursUntilPickup < 24 && hoursUntilPickup > 0;
+            isPriorBooking = hoursUntilPickup > 168;
+            isLongBooking = tripDuration > 8;
             
             // Update badges
             document.getElementById('urgentBadge').classList.toggle('hidden', !isUrgent);
@@ -851,7 +922,7 @@
             
             // Base calculation
             const baseFare = vehicleRate * parseFloat(distanceKm);
-            const minFare = vehicleRate * 50; // Minimum 50km charge
+            const minFare = vehicleRate * 50;
             
             let totalFare = Math.max(baseFare, minFare);
             
@@ -861,17 +932,17 @@
             let longDiscount = 0;
             
             if (isUrgent) {
-                urgentCharge = totalFare * 0.20; // 20% surcharge for urgent
+                urgentCharge = totalFare * 0.20;
                 totalFare += urgentCharge;
             }
             
             if (isPriorBooking) {
-                priorDiscount = totalFare * 0.15; // 15% discount for prior booking
+                priorDiscount = totalFare * 0.15;
                 totalFare -= priorDiscount;
             }
             
             if (isLongBooking) {
-                longDiscount = totalFare * 0.10; // 10% discount for long booking
+                longDiscount = totalFare * 0.10;
                 totalFare -= longDiscount;
             }
             
@@ -1113,12 +1184,11 @@
                            `• Pickup Time: ${pickup}%0A` +
                            `• Drop: ${dropLocation}%0A` +
                            `• Drop Coords: ${dropCoords}%0A` +
-                           `• Drop Time: ${drop}%0A` +
-                           `• Journey Duration: ${formatDuration(durationHours)}%0A%0A` +
+                           `• Drop Time: ${drop}%0A%0A` +
                            
                            `*Trip Information*%0A` +
                            `• Distance: ${distanceKm} km%0A` +
-                           `• Duration: ${durationHours} hours%0A` +
+                           `• Duration: ${durationHours} hours (${durationMinutes} minutes)%0A` +
                            `• Vehicle: ${vehicleType.toUpperCase()}%0A` +
                            `• Rate: ₹${vehicleRate}/km%0A%0A` +
                            
